@@ -19,7 +19,7 @@ public class Packet {
         this.dados = dados;
     }
 
-    // Criar novo packet com array de bytes
+    // Criar novo packet com array de bytes (kinda desserialize)
     public Packet(byte[] content) throws UnknownHostException {
         byte[] aux = new byte[4]; // int 4 bytes
         int posicao_atual = 0;
