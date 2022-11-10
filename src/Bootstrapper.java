@@ -50,6 +50,26 @@ public class Bootstrapper {
         }
     }
 
+    public String getVizinhos(String ip) {
+        lock.lock();
+        try {
+            Set<String> vizinhos = bottstraper.get(ip).getVizinhos();
+            bottstraper.get(ip).setVisitado(true);
+            Iterator<String> it = vizinhos.iterator();
+            StringBuilder res = new StringBuilder();
+
+            while(it.hasNext()) {
+                res.append(it.next());
+                if(it.hasNext())
+                    res.append(",");
+            }
+            return res.toString();
+        } finally {
+            lock.unlock();
+        }
+
+    }
+
 
 
 }

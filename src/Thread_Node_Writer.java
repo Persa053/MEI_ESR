@@ -12,8 +12,6 @@ public class Thread_Node_Writer implements Runnable{
 
         }
 
-
-
         public void run() {
             while (true) {
                 try {

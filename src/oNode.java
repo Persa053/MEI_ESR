@@ -35,9 +35,46 @@ public class oNode {
         tr.start();
         tw.start();
 
+
+
     }
 
-    public static void nodo(String ip, String ipBootstrapper, ServerSocket ss, PacketQueue pq){
+    public static void nodo(String ip, String ipBootstrapper, ServerSocket ss, PacketQueue pq) throws IOException {
+
+        /*
+        * TIpos de packets
+        * 1 - Nodo -> Server para saber os nodos vizinhos
+        * 2 - Server -> Nodo para indicar vizinhos
+        *
+        *
+        * */
+
+        // Nodo pergunta ao server (que vai ser o bootstraper) os vizihnos
+        Packet p = new Packet(ip, ipBootstrapper, 1, " ".getBytes(StandardCharsets.UTF_8));
+        Socket s = new Socket(p.getDest(), 8080);
+
+        DataOutputStream out = new DataOutputStream(s.getOutputStream());
+        DataInputStream in = new DataInputStream(new BufferedInputStream(s.getInputStream()));
+
+        out.write(p.serialize());
+        out.flush();
+
+        byte[] arr = new byte[4096];
+        int size = in.read(arr, 0, 4096);
+        byte[] content = new byte[size];
+        System.arraycopy(arr, 0, content, 0, size);
+
+        Packet rp = new Packet(content);
+
+        in.close();
+        out.close();
+        s.close();
+
+        String dados = new String(rp.getDados(), StandardCharsets.UTF_8);
+        Set<String> vizinhos = new TreeSet<>(List.of(dados.split(",")));
+
+        for (String st : vizinhos)
+            System.out.println("-" + st + "-");
 
 
     }

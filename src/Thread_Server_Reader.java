@@ -4,6 +4,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 
 public class Thread_Server_Reader implements Runnable{
     private ServerSocket ss;
@@ -30,6 +31,18 @@ public class Thread_Server_Reader implements Runnable{
                 System.arraycopy(arr, 0, content, 0, size);
 
                 Packet packet = new Packet(content);
+
+
+                switch (packet.getTipo()) {
+                    case 1:
+                        String adj = bootstrapper.getVizinhos(packet.getOrigem());
+                        Packet rp = new Packet(packet.getDest(), packet.getOrigem(), 2, adj.getBytes(StandardCharsets.UTF_8));
+
+                        out.write(rp.serialize());
+                        out.flush();
+
+
+                }
 
 
 
