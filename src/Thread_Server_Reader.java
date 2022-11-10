@@ -38,6 +38,8 @@ public class Thread_Server_Reader implements Runnable{
                         String adj = bootstrapper.getVizinhos(packet.getOrigem());
                         Packet rp = new Packet(packet.getDest(), packet.getOrigem(), 2, adj.getBytes(StandardCharsets.UTF_8));
 
+                        System.out.println("["+ Thread.currentThread().threadId() + "] Mandei o pacote para " + rp.getDest() + " tipo " + rp.getTipo() + "\n");
+
                         out.write(rp.serialize());
                         out.flush();
 
