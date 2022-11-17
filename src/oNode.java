@@ -8,6 +8,7 @@ import java.util.*;
 public class oNode {
 
     public static void main(String[] args) throws IOException {
+
         String ip = InetAddress.getLocalHost().getHostAddress();
         ServerSocket ss = new ServerSocket(8080);
 
