@@ -14,7 +14,7 @@ public class oNode {
 
         if (args[0].equals("server")) {
 
-            Bootstrapper bs = new Bootstrapper("../config/bootstrapper");
+            Bootstrapper bs = new Bootstrapper("config/bootstrapper");
             PacketQueue pq = new PacketQueue()
 ;            server(ip, ss, bs, pq);
 

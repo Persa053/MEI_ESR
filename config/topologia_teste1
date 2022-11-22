@@ -1,0 +1,16 @@
+127.0.0.1       localhost
+127.0.1.1       xubuncore
+10.0.5.10       S1
+10.0.5.1        n2
+10.0.3.1        n3
+10.0.2.1        n4
+10.0.1.1        n5
+10.0.0.20       C1
+10.0.4.20       C1
+
+# The following lines are desirable for IPv6 capable hosts
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
