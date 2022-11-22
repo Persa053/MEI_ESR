@@ -80,6 +80,7 @@ public class Packet {
         System.arraycopy(byteBuffer.array(),0,content,posicao,4);
         posicao += 4;
 
+
         byte[] source = InetAddress.getByName(this.origem).getAddress();
         System.arraycopy(source,0,content,posicao,4);
         posicao += 4;

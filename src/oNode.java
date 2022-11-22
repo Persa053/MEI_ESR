@@ -19,7 +19,7 @@ public class oNode {
 ;            server(ip, ss, bs, pq);
 
         } else if (args[0].equals("node") && args.length == 2)
-                    nodo(ip, args[0], ss, new PacketQueue());
+                    nodo(ip, args[1], ss, new PacketQueue());
 
         else if (args[0].equals("cliente") && args.length == 2) ;
 
