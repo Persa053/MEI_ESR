@@ -10,11 +10,12 @@ public class oNode {
     public static void main(String[] args) throws IOException {
 
         String ip = InetAddress.getLocalHost().getHostAddress();
+        System.out.println(ip);
         ServerSocket ss = new ServerSocket(8080);
 
         if (args[0].equals("server")) {
 
-            Bootstrapper bs = new Bootstrapper("config/bootstrapper");
+            Bootstrapper bs = new Bootstrapper("../config/bootstrapper");
             PacketQueue pq = new PacketQueue()
 ;            server(ip, ss, bs, pq);
 
@@ -51,7 +52,7 @@ public class oNode {
         * */
 
         // Nodo pergunta ao server (que vai ser o bootstraper) os vizihnos
-        Packet p = new Packet(ip, ipBootstrapper, 1, " ".getBytes(StandardCharsets.UTF_8));
+        Packet p = new Packet(ipBootstrapper, ip, 1, " ".getBytes(StandardCharsets.UTF_8));
         Socket s = new Socket(p.getDest(), 8080);
 
         DataOutputStream out = new DataOutputStream(s.getOutputStream());

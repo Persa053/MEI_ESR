@@ -36,7 +36,7 @@ public class Thread_Server_Reader implements Runnable{
                 switch (packet.getTipo()) {
                     case 1:
                         String adj = bootstrapper.getVizinhos(packet.getOrigem());
-                        Packet rp = new Packet(packet.getDest(), packet.getOrigem(), 2, adj.getBytes(StandardCharsets.UTF_8));
+                        Packet rp = new Packet(packet.getOrigem(), packet.getDest(), 2, adj.getBytes(StandardCharsets.UTF_8));
 
                         System.out.println("["+ Thread.currentThread().getId() + "] Mandei o pacote para " + rp.getDest() +
                                             " tipo " + rp.getTipo() + "\n");
