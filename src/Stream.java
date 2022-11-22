@@ -8,13 +8,12 @@
 import java.io.*;
 import java.net.*;
 import java.awt.*;
-import java.util.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.Timer;
 
 
-public class Servidor extends JFrame implements ActionListener {
+public class Stream extends JFrame implements ActionListener {
 
   //GUI:
   //----------------
@@ -43,7 +42,7 @@ public class Servidor extends JFrame implements ActionListener {
   //--------------------------
   //Constructor
   //--------------------------
-  public Servidor() {
+  public Stream() {
     //init Frame
     super("Servidor");
 
@@ -84,21 +83,20 @@ public class Servidor extends JFrame implements ActionListener {
   //------------------------------------
   //main
   //------------------------------------
-  public static void main(String argv[]) throws Exception
-  {
+  public static void stream() throws Exception {
     //get video filename to request:
-    if (argv.length >= 1 ) {
+   /* if (argv.length >= 1 ) {
         VideoFileName = argv[0];
         System.out.println("Servidor: VideoFileName indicado como parametro: " + VideoFileName);
-    } else  {
+    } else  { */
         VideoFileName = "files/movie.Mjpeg";
         System.out.println("Servidor: parametro não foi indicado. VideoFileName = " + VideoFileName);
-    }
+    //}
 
     File f = new File(VideoFileName);
     if (f.exists()) {
         //Create a Main object 
-        Servidor s = new Servidor();
+        Stream s = new Stream();
         //show GUI: (opcional!)
         //s.pack();
         //s.setVisible(true);

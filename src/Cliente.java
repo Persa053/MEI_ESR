@@ -40,6 +40,11 @@ public class Cliente {
   //--------------------------
   //Constructor
   //--------------------------
+
+
+
+
+    // Fazer uma thread pra reecber isto <------
   public Cliente() {
 
     //build GUI
