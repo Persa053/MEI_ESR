@@ -15,7 +15,8 @@ public class oNode {
 
         if (args[0].equals("server")) {
 
-            Bootstrapper bs = new Bootstrapper("../config/bootstrapper");
+            //Bootstrapper bs = new Bootstrapper("../config/teste1_bootstrapper");
+            Bootstrapper bs = new Bootstrapper("../config/server_client_bootstrapper");
             PacketQueue pq = new PacketQueue()
 ;            server(ip, ss, bs, pq);
 
@@ -29,6 +30,7 @@ public class oNode {
         else System.out.println("Número de argumentos errrado");
     }
 
+
     public static void server(String ip, ServerSocket ss, Bootstrapper bs, PacketQueue pq){
 
         Thread tr = new Thread(new Thread_Server_Writer(pq));
@@ -36,8 +38,6 @@ public class oNode {
 
         tr.start();
         tw.start();
-
-
 
     }
 
@@ -68,12 +68,17 @@ public class oNode {
 
         Packet rp = new Packet(content);
 
+        System.out.println("["+ Thread.currentThread().getId() + "] Recebi o pacote de " + rp.getOrigem() +
+                                            " tipo " + rp.getTipo() + "\n");
+
         in.close();
         out.close();
         s.close();
 
         String dados = new String(rp.getDados(), StandardCharsets.UTF_8);
         Set<String> vizinhos = new TreeSet<>(List.of(dados.split(",")));
+        for( String str : vizinhos)
+            System.out.println(str +"\n");
 
 
     }

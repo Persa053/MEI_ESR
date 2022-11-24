@@ -32,6 +32,8 @@ public class Thread_Server_Reader implements Runnable{
 
                 Packet packet = new Packet(content);
 
+                System.out.println("["+ Thread.currentThread().getId() + "] Recebi o pacote de " + packet.getOrigem() +
+                                            " tipo " + packet.getTipo() + "\n");
 
                 switch (packet.getTipo()) {
                     case 1:

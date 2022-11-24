@@ -1,4 +1,4 @@
-public class Thread_Node_Reader implements Runnable{
+public class Thread_Client_Reader implements Runnable{
     @Override
     public void run() {
 
