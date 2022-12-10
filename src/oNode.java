@@ -52,40 +52,18 @@ public class oNode {
         * */
 
         // Nodo pergunta ao server (que vai ser o bootstraper) os vizihnos
-        Packet p = new Packet(ipBootstrapper, ip, 1, " ".getBytes(StandardCharsets.UTF_8));
-        Socket s = new Socket(p.getDest(), 8080);
-
-        DataOutputStream out = new DataOutputStream(s.getOutputStream());
-        DataInputStream in = new DataInputStream(new BufferedInputStream(s.getInputStream()));
-
-        out.write(p.serialize());
-        out.flush();
-
-        byte[] arr = new byte[4096];
-        int size = in.read(arr, 0, 4096);
-        byte[] content = new byte[size];
-        System.arraycopy(arr, 0, content, 0, size);
-
-        Packet rp = new Packet(content);
-
-        System.out.println("["+ Thread.currentThread().getId() + "] Recebi o pacote de " + rp.getOrigem() +
-                                            " tipo " + rp.getTipo() + "\n");
-
-        in.close();
-        out.close();
-        s.close();
-
-        String dados = new String(rp.getDados(), StandardCharsets.UTF_8);
-        Set<String> vizinhos = new TreeSet<>(List.of(dados.split(",")));
-        for( String str : vizinhos)
-            System.out.println(str +"\n");
-
+        Set<String> viz = recebeViz(ip, ipBootstrapper, pq);
 
     }
 
     public static void cliente(String ip, String ipBootstrapper, ServerSocket ss, PacketQueue pq) throws IOException {
 
         // Cliente pergunta ao server (que vai ser o bootstraper) os vizihnos
+        Set<String> viz = recebeViz(ip, ipBootstrapper, pq);
+    }
+
+
+    public static Set<String> recebeViz(String ip, String ipBootstrapper, PacketQueue pq) throws IOException {
         Packet p = new Packet(ipBootstrapper, ip, 1, " ".getBytes(StandardCharsets.UTF_8));
         Socket s = new Socket(p.getDest(), 8080);
 
@@ -101,15 +79,23 @@ public class oNode {
         System.arraycopy(arr, 0, content, 0, size);
 
         Packet rp = new Packet(content);
+        
+        System.out.println("["+ Thread.currentThread().getId() + "] Recebi o pacote de " + rp.getOrigem() +
+                                            " tipo " + rp.getTipo() + "\n");
+
 
         in.close();
         out.close();
         s.close();
-
+        
         String dados = new String(rp.getDados(), StandardCharsets.UTF_8);
         Set<String> vizinhos = new TreeSet<>(List.of(dados.split(",")));
-
         for (String st : vizinhos)
             System.out.println("-" + st + "-");
+        
+        
+        
+            return vizinhos;        
     }
 }
+
