@@ -38,12 +38,16 @@ public class oNode {
 
     public static void server(String ip, ServerSocket ss, Bootstrapper bs, PacketQueue pq) {
 
+        TreeSet<String> set = new TreeSet<>(List.of(bs.getVizinhos(ip).split(",")));
+        AddressingTable table = new AddressingTable(set, ip);
+
         Thread tr = new Thread(new Thread_Server_Writer(pq));
-        Thread tw = new Thread(new Thread_Server_Reader(ss, bs, pq));
+        Thread tw = new Thread(new Thread_Server_Reader(ss, bs, pq, table));
+        Thread sender_udp = new Thread(new SenderUDP("default", table));
 
         tr.start();
         tw.start();
-
+        sender_udp.start();
     }
 
     public static void nodo(String ip, String ipBootstrapper, ServerSocket ss, PacketQueue pq) throws IOException {
@@ -65,6 +69,7 @@ public class oNode {
 
         Thread tn_reader = new Thread(new Thread_Node_Reader());
         Thread tn_writer = new Thread(new Thread_Node_Writer(queue));
+
         tn_writer.start();
 
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
@@ -76,13 +81,11 @@ public class oNode {
                 queue.add(new Packet(table.getSender(), ip, 3,
                         "".getBytes(StandardCharsets.UTF_8)));
 
-                /*
-                 * Thread display = new Thread(new ClientDisplay(table, RTPqueue, queue, ip));
-                 * display.start();
-                 */
+                Thread display = new Thread(new ClientDisplay(table, RTPqueue, queue, ip));
+                display.start();
 
             } else if (line.equals("exit")) {
-
+                System.out.println("exit");
             }
 
         }

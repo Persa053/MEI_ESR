@@ -10,8 +10,9 @@ public class Thread_Server_Reader implements Runnable {
     private ServerSocket ss;
     private Bootstrapper bootstrapper;
     private PacketQueue queue;
+    private AddressingTable table;
 
-    public Thread_Server_Reader(ServerSocket ss, Bootstrapper bootstrapper, PacketQueue queue) {
+    public Thread_Server_Reader(ServerSocket ss, Bootstrapper bootstrapper, PacketQueue queue, AddressingTable table) {
         this.ss = ss;
         this.bootstrapper = bootstrapper;
         this.queue = queue;
@@ -48,9 +49,14 @@ public class Thread_Server_Reader implements Runnable {
                         out.write(rp.serialize());
                         out.flush();
 
-                        // pedido Stream
                     case 3:
-                        System.out.println("Mandei o pacote");
+                        // init Stream
+                        table.turnOn(packet.getOrigem());
+                        System.out.println("init Stream");
+                    case 4:
+                        // stop Stream
+                        table.turnOff(packet.getOrigem());
+                        System.out.println("stop Stream");
                 }
 
             } catch (IOException e) {

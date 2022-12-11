@@ -75,6 +75,7 @@ public class ClientDisplay implements Runnable {
     public void actionPerformed(ActionEvent e) {
 
       System.out.println("Teardown Button pressed !");
+      table.turnOff(ip);
       // stop the timer
       cTimer.stop();
       // exit
@@ -92,11 +93,9 @@ public class ClientDisplay implements Runnable {
       rcvdp = new DatagramPacket(cBuf, cBuf.length);
 
       try {
-        // receive the DP from the socket:
-        RTPsocket.receive(rcvdp);
-
         // create an RTPpacket object from the DP
-        RTPpacket rtp_packet = new RTPpacket(rcvdp.getData(), rcvdp.getLength());
+        RTPpacket rtp_packet = RTPqueue.remove();
+        // RTPpacket rtp_packet = new RTPpacket(rcvdp.getData(), rcvdp.getLength());
 
         // print important header fields of the RTP packet received:
         System.out.println("Got RTP packet with SeqNum # " + rtp_packet.getsequencenumber() + " TimeStamp "
@@ -117,10 +116,9 @@ public class ClientDisplay implements Runnable {
         // display the image as an ImageIcon object
         icon = new ImageIcon(image);
         iconLabel.setIcon(icon);
-      } catch (InterruptedIOException iioe) {
-        System.out.println("Nothing to read");
-      } catch (IOException ioe) {
-        System.out.println("Exception caught: " + ioe);
+      } catch (InterruptedException e1) {
+        // TODO Auto-generated catch block
+        e1.printStackTrace();
       }
     }
   }
