@@ -88,11 +88,8 @@ public class AddressingTable {
 
     public AddressingTable(Set<String> neighbours, String sender) {
         this.sender = sender;
-
-        // default values
         this.lock = new ReentrantLock();
         this.isStreaming = false;
-
         this.streamingTable = new HashMap<>();
 
         for (String n : neighbours)

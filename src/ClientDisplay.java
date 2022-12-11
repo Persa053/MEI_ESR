@@ -90,7 +90,7 @@ public class ClientDisplay implements Runnable {
     public void actionPerformed(ActionEvent e) {
 
       // Construct a DatagramPacket to receive data from the UDP socket
-      rcvdp = new DatagramPacket(cBuf, cBuf.length);
+      // rcvdp = new DatagramPacket(cBuf, cBuf.length);
 
       try {
         // create an RTPpacket object from the DP
@@ -137,9 +137,9 @@ public class ClientDisplay implements Runnable {
 
     // Buttons
     buttonPanel.setLayout(new GridLayout(1, 0));
-    buttonPanel.add(setupButton);
+    // buttonPanel.add(setupButton);
     buttonPanel.add(playButton);
-    buttonPanel.add(pauseButton);
+    // buttonPanel.add(pauseButton);
     buttonPanel.add(tearButton);
 
     // handlers... (so dois)
@@ -167,13 +167,16 @@ public class ClientDisplay implements Runnable {
     cTimer.setCoalesce(true);
     cBuf = new byte[15000]; // allocate enough memory for the buffer used to receive data from the server
 
-    try {
-      // socket e video
-      RTPsocket = new DatagramSocket(RTP_RCV_PORT); // init RTP socket (o mesmo para o cliente e servidor)
-      RTPsocket.setSoTimeout(5000); // setimeout to 5s
-    } catch (SocketException e) {
-      System.out.println("Cliente: erro no socket: " + e.getMessage());
-    }
+    /*
+     * try {
+     * // socket e video
+     * RTPsocket = new DatagramSocket(RTP_RCV_PORT); // init RTP socket (o mesmo
+     * para o cliente e servidor)
+     * RTPsocket.setSoTimeout(5000); // setimeout to 5s
+     * } catch (SocketException e) {
+     * System.out.println("Cliente: erro no socket: " + e.getMessage());
+     * }
+     */
   }
 
 }// end of Class Cliente

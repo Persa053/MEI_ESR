@@ -16,6 +16,7 @@ public class Thread_Server_Reader implements Runnable {
         this.ss = ss;
         this.bootstrapper = bootstrapper;
         this.queue = queue;
+        this.table = table;
     }
 
     public void run() {
@@ -48,15 +49,19 @@ public class Thread_Server_Reader implements Runnable {
 
                         out.write(rp.serialize());
                         out.flush();
-
+                        break;
                     case 3:
                         // init Stream
                         table.turnOn(packet.getOrigem());
                         System.out.println("init Stream");
+                        Thread sender_udp = new Thread(new SenderUDP("default", table));
+                        sender_udp.start();
+                        break;
                     case 4:
                         // stop Stream
                         table.turnOff(packet.getOrigem());
                         System.out.println("stop Stream");
+                        break;
                 }
 
             } catch (IOException e) {

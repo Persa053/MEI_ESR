@@ -53,7 +53,6 @@ public class Stream extends JFrame implements ActionListener {
     // init Frame
     super("Servidor");
 
-    System.out.println("AQUIIIIII==" + filename);
     // init variables
     this.table = table;
     this.filename = filename;
@@ -96,13 +95,13 @@ public class Stream extends JFrame implements ActionListener {
   }
 
   public static void execute(String filename, AddressingTable table) {
+
     File f = new File(filename);
     if (f.exists()) {
       new Stream(filename, table);
     } else {
       VideoFileName = "../files/movie.Mjpeg";
       System.out.println("Servidor: parametro não foi indicado. VideoFileName = " + VideoFileName);
-      System.out.println("AQUIIIIII==" + filename);
       new Stream(VideoFileName, table);
     }
 

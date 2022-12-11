@@ -43,11 +43,10 @@ public class oNode {
 
         Thread tr = new Thread(new Thread_Server_Writer(pq));
         Thread tw = new Thread(new Thread_Server_Reader(ss, bs, pq, table));
-        Thread sender_udp = new Thread(new SenderUDP("default", table));
 
         tr.start();
         tw.start();
-        sender_udp.start();
+        // sender_udp.start();
     }
 
     public static void nodo(String ip, String ipBootstrapper, ServerSocket ss, PacketQueue pq) throws IOException {
@@ -69,8 +68,10 @@ public class oNode {
 
         Thread tn_reader = new Thread(new Thread_Node_Reader());
         Thread tn_writer = new Thread(new Thread_Node_Writer(queue));
+        Thread rtp_reader = new Thread(new Client_RTP_Receiver(table, RTPqueue));
 
         tn_writer.start();
+        rtp_reader.start();
 
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         String line;
@@ -119,8 +120,6 @@ public class oNode {
 
         String dados = new String(rp.getDados(), StandardCharsets.UTF_8);
         Set<String> vizinhos = new TreeSet<>(List.of(dados.split(",")));
-        for (String st : vizinhos)
-            System.out.println("-" + st + "-");
 
         return new AddressingTable(vizinhos, ipBootstrapper);
     }
