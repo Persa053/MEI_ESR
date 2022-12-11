@@ -6,7 +6,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
-public class Thread_Server_Reader implements Runnable{
+public class Thread_Server_Reader implements Runnable {
     private ServerSocket ss;
     private Bootstrapper bootstrapper;
     private PacketQueue queue;
@@ -17,9 +17,8 @@ public class Thread_Server_Reader implements Runnable{
         this.queue = queue;
     }
 
-
     public void run() {
-        while(true){
+        while (true) {
             try {
                 Socket s = ss.accept();
                 DataOutputStream out = new DataOutputStream(s.getOutputStream());
@@ -32,24 +31,27 @@ public class Thread_Server_Reader implements Runnable{
 
                 Packet packet = new Packet(content);
 
-                System.out.println("["+ Thread.currentThread().getId() + "] Recebi o pacote de " + packet.getOrigem() +
-                                            " tipo " + packet.getTipo() + "\n");
+                System.out.println("[" + Thread.currentThread().getId() + "] Recebi o pacote de " + packet.getOrigem() +
+                        " tipo " + packet.getTipo() + "\n");
 
                 switch (packet.getTipo()) {
+                    // pedido Vizinhos
                     case 1:
                         String adj = bootstrapper.getVizinhos(packet.getOrigem());
-                        Packet rp = new Packet(packet.getOrigem(), packet.getDest(), 2, adj.getBytes(StandardCharsets.UTF_8));
+                        Packet rp = new Packet(packet.getOrigem(), packet.getDest(), 2,
+                                adj.getBytes(StandardCharsets.UTF_8));
 
-                        System.out.println("["+ Thread.currentThread().getId() + "] Mandei o pacote para " + rp.getDest() +
-                                            " tipo " + rp.getTipo() + "\n");
+                        System.out.println(
+                                "[" + Thread.currentThread().getId() + "] Mandei o pacote para " + rp.getDest() +
+                                        " tipo " + rp.getTipo() + "\n");
 
                         out.write(rp.serialize());
                         out.flush();
 
-
+                        // pedido Stream
+                    case 3:
+                        System.out.println("Mandei o pacote");
                 }
-
-
 
             } catch (IOException e) {
                 throw new RuntimeException(e);

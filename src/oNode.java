@@ -58,21 +58,32 @@ public class oNode {
 
         // Cliente pergunta ao server (que vai ser o bootstraper) os vizihnos
         AddressingTable table = recebeViz(ip, ipBootstrapper, queue);
-        Map<Integer, RTPpacketQueue> queueMap = new HashMap<>();
+        RTPpacketQueue RTPqueue = new RTPpacketQueue();
 
-        Thread tn_reader = new Thread(new Thread_Node_Reader(queue));
+        // Multiple streams
+        // Map<Integer, RTPpacketQueue> queueMap = new HashMap<>();
+
+        Thread tn_reader = new Thread(new Thread_Node_Reader());
         Thread tn_writer = new Thread(new Thread_Node_Writer(queue));
-    
+        tn_writer.start();
+
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         String line;
 
         while ((line = in.readLine()) != null) {
 
-            queue.add(new Packet(ip, table.getSender(), 3,
-                    String.valueOf(1).getBytes(StandardCharsets.UTF_8)));
+            if (line.equals("stream")) {
+                queue.add(new Packet(table.getSender(), ip, 3,
+                        "".getBytes(StandardCharsets.UTF_8)));
 
-            Thread display = new Thread(new ClientDisplay(at, queueMap.get(streamID), queueTCP, streamID, ip));
-            display.start();
+                /*
+                 * Thread display = new Thread(new ClientDisplay(table, RTPqueue, queue, ip));
+                 * display.start();
+                 */
+
+            } else if (line.equals("exit")) {
+
+            }
 
         }
 
@@ -80,7 +91,7 @@ public class oNode {
 
     public static AddressingTable recebeViz(String ip, String ipBootstrapper, PacketQueue pq) throws IOException {
 
-        Packet p = new Packet(ipBootstrapper, ip, 1, " ".getBytes(StandardCharsets.UTF_8));
+        Packet p = new Packet(ipBootstrapper, ip, 1, "".getBytes(StandardCharsets.UTF_8));
         Socket s = new Socket(p.getDest(), 8080);
 
         DataOutputStream out = new DataOutputStream(s.getOutputStream());

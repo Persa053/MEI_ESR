@@ -40,18 +40,18 @@ public class ClientDisplay implements Runnable {
   private AddressingTable table;
   private RTPpacketQueue RTPqueue;
   private PacketQueue TCPqueue;
-  private int streamID;
+  private String ip;
 
   // --------------------------
   // Constructor
   // --------------------------
 
   // Fazer uma thread pra reecber isto <------
-  public ClientDisplay(AddressingTable table, RTPpacketQueue RTPqueue, PacketQueue TCPqueue, int streamID) {
+  public ClientDisplay(AddressingTable table, RTPpacketQueue RTPqueue, PacketQueue TCPqueue, String ip) {
     this.table = table;
     this.RTPqueue = RTPqueue;
     this.TCPqueue = TCPqueue;
-    this.streamID = 1;
+    this.ip = ip;
   }
 
   // ------------------------------------
