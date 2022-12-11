@@ -81,6 +81,7 @@ public class Teste {
     //Image display label
     iconLabel.setIcon(null);
     
+    
     //frame layout
     mainPanel.setLayout(null);
     mainPanel.add(iconLabel);

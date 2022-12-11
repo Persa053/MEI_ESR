@@ -12,7 +12,6 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.Timer;
 
-
 public class Stream extends JFrame implements ActionListener {
 
   //GUI:
@@ -50,6 +49,10 @@ public class Stream extends JFrame implements ActionListener {
     sTimer = new Timer(FRAME_PERIOD, this); //init Timer para servidor
     sTimer.setInitialDelay(0);
     sTimer.setCoalesce(true);
+
+
+  
+    // init VideoStream
     sBuf = new byte[15000]; //allocate memory for the sending buffer
 
     try {
@@ -76,7 +79,7 @@ public class Stream extends JFrame implements ActionListener {
     //GUI:
     label = new JLabel("Send frame #        ", JLabel.CENTER);
     getContentPane().add(label, BorderLayout.CENTER);
-          
+    
     sTimer.start();
   }
 
