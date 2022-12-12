@@ -43,8 +43,10 @@ public class Thread_Node_Reader implements Runnable {
 
                         // table.setisConsuming(true);
                         break;
+                    case 5:
+                        System.out.println("Beacon");
                     default:
-                        System.out.println("Default case");
+                        System.out.println("Default");
                 }
 
                 in.close();

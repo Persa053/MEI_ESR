@@ -8,7 +8,8 @@ import java.util.*;
          * 1 - Nodo -> Server para saber os nodos vizinhos
          * 2 - Server -> Nodo para indicar vizinhos
          * 3 - Cliente -> Server para começar Stream
-         *
+         * 4 - Cliente -> Server para parar Stream
+         * 5 - Beacon 
          */
 
 public class oNode {
@@ -43,11 +44,14 @@ public class oNode {
 
         Thread tw = new Thread(new Thread_Server_Writer(pq));
         Thread tr = new Thread(new Thread_Server_Reader(ss, bs, pq, table));
-        Thread sender_udp = new Thread(new SenderUDP("default", table));
+        Thread stream = new Thread(new SenderUDP("default", table));
+        Thread beacon = new Thread(new BeaconSender(table, pq, ip));
 
-        sender_udp.start();
         tr.start();
         tw.start();
+        stream.start();
+        beacon.start();
+
     }
 
     public static void nodo(String ip, String ipBootstrapper, ServerSocket ss, PacketQueue pq) throws IOException {
@@ -61,9 +65,12 @@ public class oNode {
         Thread tw = new Thread(new Thread_Node_Writer(pq));
         Thread tr = new Thread(new Thread_Node_Reader(ss, table, pq, ip));
 
+        Thread beacon = new Thread(new BeaconSender(table, pq, ip));
+
         forwarder.start();
         tw.start();
         tr.start();
+        beacon.start();
 
         // Nodo pergunta ao server (que vai ser o bootstraper) os vizihnos
 
@@ -84,8 +91,11 @@ public class oNode {
         Thread tn_writer = new Thread(new Thread_Node_Writer(queue));
         Thread rtp_reader = new Thread(new Client_RTP_Receiver(table, RTPqueue));
 
+        Thread beacon = new Thread(new BeaconSender(table, queue, ip));
+
         tn_writer.start();
         rtp_reader.start();
+        beacon.start();
 
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         String line;

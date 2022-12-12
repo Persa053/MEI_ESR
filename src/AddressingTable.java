@@ -10,24 +10,64 @@ public class AddressingTable {
     private String toNetwork;
     private Boolean isConsuming;
 
+    private int hops;
+
     // (IP vizinhos/adjacentes, True se querem consumir a Stream)
     private Map<String, Boolean> streamingTable;
     private final ReentrantLock lock;
 
+    public int getHops() {
+        lock.lock();
+        try {
+            return hops;
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public void setHops(int hops) {
+        lock.lock();
+        try {
+            this.hops = hops;
+        } finally {
+            lock.unlock();
+        }
+    }
+
     public String getToNetwork() {
-        return toNetwork;
+        lock.lock();
+        try {
+            return this.toNetwork;
+        } finally {
+            lock.unlock();
+        }
     }
 
     public void setToNetwork(String toNetwork) {
-        this.toNetwork = toNetwork;
+        lock.lock();
+        try {
+            this.toNetwork = toNetwork;
+        } finally {
+            lock.unlock();
+        }
     }
 
     public String getToServer() {
-        return toServer;
+        lock.lock();
+        try {
+            return this.toServer;
+        } finally {
+            lock.unlock();
+        }
     }
 
     public void setToServer(String toServer) {
-        this.toServer = toServer;
+        lock.lock();
+        try {
+            this.toServer = toServer;
+        } finally {
+            lock.unlock();
+        }
     }
 
     public Boolean getisConsuming() {
@@ -90,10 +130,30 @@ public class AddressingTable {
         return this.streamingTable.values().stream().collect(Collectors.toSet()).contains(true) || this.isConsuming;
     }
 
+    public Boolean getEstado(String ip) {
+        lock.lock();
+        try {
+            return this.streamingTable.get(ip);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public void setEstado(String ip, Boolean estado) {
+        lock.lock();
+        try {
+            this.streamingTable.put(ip, estado);
+        } finally {
+            lock.unlock();
+        }
+    }
+
     public AddressingTable(Set<String> neighbours) {
         this.lock = new ReentrantLock();
         this.isConsuming = false;
         this.streamingTable = new HashMap<>();
+
+        this.hops = Integer.MAX_VALUE;
 
         for (String n : neighbours)
             this.streamingTable.put(n, false);
