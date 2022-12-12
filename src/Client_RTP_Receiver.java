@@ -28,8 +28,6 @@ public class Client_RTP_Receiver implements Runnable {
 
                 RTPsocket.receive(rcvdp);
 
-                System.out.println("Got RTP packet with data " + rcvdp.getData());
-
                 RTPpacket rtp_packet = new RTPpacket(rcvdp.getData(), rcvdp.getLength());
 
                 Map<String, Boolean> ips = table.getStreamingTable();
@@ -40,7 +38,7 @@ public class Client_RTP_Receiver implements Runnable {
                     RTPsocket.send(senddp);
                 }
 
-                if (table.getIsStreaming()) {
+                if (table.getisConsuming()) {
                     RTPqueue.add(rtp_packet);
                 }
             }

@@ -11,9 +11,7 @@ public class Thread_Server_Writer implements Runnable {
         this.queue = queue;
 
     }
-
-
-
+    
     public void run() {
         while (true) {
             try {

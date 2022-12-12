@@ -54,8 +54,7 @@ public class Thread_Server_Reader implements Runnable {
                         // init Stream
                         table.turnOn(packet.getOrigem());
                         System.out.println("init Stream");
-                        Thread sender_udp = new Thread(new SenderUDP("default", table));
-                        sender_udp.start();
+                        
                         break;
                     case 4:
                         // stop Stream

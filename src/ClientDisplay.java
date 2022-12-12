@@ -7,7 +7,10 @@
 
 import java.io.*;
 import java.net.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -64,6 +67,9 @@ public class ClientDisplay implements Runnable {
     public void actionPerformed(ActionEvent e) {
 
       System.out.println("Play Button pressed !");
+      TCPqueue.add(new Packet(table.getSender(), ip, 3,
+          "".getBytes(StandardCharsets.UTF_8)));
+      table.setisConsuming(true);
       // start the timers ...
       cTimer.start();
     }
@@ -78,6 +84,13 @@ public class ClientDisplay implements Runnable {
       table.turnOff(ip);
       // stop the timer
       cTimer.stop();
+
+      f.dispose();
+
+      table.setisConsuming(false);
+      if (!table.isStreaming()) {
+        TCPqueue.add(new Packet(table.getSender(), ip, 4, "".getBytes(StandardCharsets.UTF_8)));
+      }
       // exit
       System.exit(0);
     }

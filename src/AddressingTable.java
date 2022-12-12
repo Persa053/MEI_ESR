@@ -2,29 +2,30 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 
 public class AddressingTable {
 
     private String sender;
-    private Boolean isStreaming;
+    private Boolean isConsuming;
 
     // (IP vizinhos/adjacentes, True se querem consumir a String)
     private Map<String, Boolean> streamingTable;
     private final ReentrantLock lock;
 
-    public Boolean getIsStreaming() {
+    public Boolean getisConsuming() {
         lock.lock();
         try {
-            return isStreaming;
+            return isConsuming;
         } finally {
             lock.unlock();
         }
     }
 
-    public void setIsStreaming(Boolean isStreaming) {
+    public void setisConsuming(Boolean isConsuming) {
         lock.lock();
         try {
-            this.isStreaming = isStreaming;
+            this.isConsuming = isConsuming;
         } finally {
             lock.unlock();
         }
@@ -86,10 +87,15 @@ public class AddressingTable {
         }
     }
 
+    // se estamos a transmitir a stream para algum vizinho
+    public Boolean isStreaming() {
+        return this.streamingTable.values().stream().collect(Collectors.toSet()).contains(true);
+    }
+
     public AddressingTable(Set<String> neighbours, String sender) {
         this.sender = sender;
         this.lock = new ReentrantLock();
-        this.isStreaming = false;
+        this.isConsuming = false;
         this.streamingTable = new HashMap<>();
 
         for (String n : neighbours)

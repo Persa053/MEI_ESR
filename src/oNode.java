@@ -43,10 +43,11 @@ public class oNode {
 
         Thread tr = new Thread(new Thread_Server_Writer(pq));
         Thread tw = new Thread(new Thread_Server_Reader(ss, bs, pq, table));
+        Thread sender_udp = new Thread(new SenderUDP("default", table));
 
+        sender_udp.start();
         tr.start();
         tw.start();
-        // sender_udp.start();
     }
 
     public static void nodo(String ip, String ipBootstrapper, ServerSocket ss, PacketQueue pq) throws IOException {
@@ -76,17 +77,13 @@ public class oNode {
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         String line;
 
+        Thread display = new Thread(new ClientDisplay(table, RTPqueue, queue, ip));
+        display.start();
+
         while ((line = in.readLine()) != null) {
-
-            if (line.equals("stream")) {
-                queue.add(new Packet(table.getSender(), ip, 3,
-                        "".getBytes(StandardCharsets.UTF_8)));
-
-                Thread display = new Thread(new ClientDisplay(table, RTPqueue, queue, ip));
-                display.start();
-
-            } else if (line.equals("exit")) {
-                System.out.println("exit");
+            if (line.equals("exit")) {
+                System.out.println("Goodbye have a great time!!!");
+                System.exit(0);
             }
 
         }

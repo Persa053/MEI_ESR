@@ -67,7 +67,6 @@ public class Stream extends JFrame implements ActionListener {
 
     try {
       RTPsocket = new DatagramSocket(); // init RTP socket
-
       video = new VideoStream(filename); // init the VideoStream object:
       System.out.println("Servidor: vai enviar video da file " + VideoFileName);
 
@@ -150,9 +149,16 @@ public class Stream extends JFrame implements ActionListener {
         System.out.println("Exception caught: " + ex);
         System.exit(0);
       }
+
     } else {
+      try {
+        video = new VideoStream(filename);
+        imagenb = 0;
+      } catch (Exception ex) {
+        ex.printStackTrace();
+      }
       // if we have reached the end of the video file, stop the timer
-      sTimer.stop();
+      // sTimer.stop();
     }
   }
 
