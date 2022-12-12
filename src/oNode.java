@@ -39,7 +39,7 @@ public class oNode {
     public static void server(String ip, ServerSocket ss, Bootstrapper bs, PacketQueue pq) {
 
         TreeSet<String> set = new TreeSet<>(List.of(bs.getVizinhos(ip).split(",")));
-        AddressingTable table = new AddressingTable(set, ip);
+        AddressingTable table = new AddressingTable(set);
 
         Thread tw = new Thread(new Thread_Server_Writer(pq));
         Thread tr = new Thread(new Thread_Server_Reader(ss, bs, pq, table));
@@ -54,10 +54,12 @@ public class oNode {
 
         // Nodo pergunta ao server (que vai ser o bootstraper) os vizihnos
         AddressingTable table = recebeViz(ip, ipBootstrapper, pq);
+        table.setToNetwork("10.0.1.20");
+        table.setToServer(ipBootstrapper);
 
         Thread forwarder = new Thread(new ForwarderRTP(table));
         Thread tw = new Thread(new Thread_Node_Writer(pq));
-        Thread tr = new Thread(new Thread_Node_Reader(ss, table, pq, ipBootstrapper));
+        Thread tr = new Thread(new Thread_Node_Reader(ss, table, pq, ip));
 
         forwarder.start();
         tw.start();
@@ -72,6 +74,7 @@ public class oNode {
 
         // Cliente pergunta ao server (que vai ser o bootstraper) os vizihnos
         AddressingTable table = recebeViz(ip, ipBootstrapper, queue);
+        table.setToServer("10.0.0.1");
         RTPpacketQueue RTPqueue = new RTPpacketQueue();
 
         // Multiple streams
@@ -80,7 +83,6 @@ public class oNode {
         Thread tn_reader = new Thread(new Thread_Node_Reader(ss, table, queue, ipBootstrapper));
         Thread tn_writer = new Thread(new Thread_Node_Writer(queue));
         Thread rtp_reader = new Thread(new Client_RTP_Receiver(table, RTPqueue));
-
 
         tn_writer.start();
         rtp_reader.start();
@@ -127,8 +129,10 @@ public class oNode {
         s.close();
 
         String dados = new String(rp.getDados(), StandardCharsets.UTF_8);
-        Set<String> vizinhos = new TreeSet<>(List.of(dados.split(",")));
+        Set<String> vizinhos = new TreeSet<>(List.of(dados.split(";")));
 
-        return new AddressingTable(vizinhos, ipBootstrapper);
+        System.out.println("Vizinhos=" + vizinhos.toString());
+
+        return new AddressingTable(vizinhos);
     }
 }

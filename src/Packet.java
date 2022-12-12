@@ -58,19 +58,19 @@ public class Packet {
 
     // getters
     public String getDest() {
-        return dest;
+        return this.dest;
     }
 
     public String getOrigem() {
-        return origem;
+        return this.origem;
     }
 
     public int getTipo() {
-        return tipo;
+        return this.tipo;
     }
 
     public byte[] getDados() {
-        return dados;
+        return this.dados;
     }
 
     public void print_packet() {

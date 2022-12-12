@@ -32,10 +32,15 @@ public class Thread_Node_Reader implements Runnable {
 
                 switch (p.getTipo()) {
                     case 3:
-                        if (table.isStreaming()) {
-                            queue.add(new Packet(ip, table.getSender(), 3, p.getDados()));
+                        System.out.println("Node recebeu tipo 3 de " + p.getOrigem());
+                        if (!table.isStreaming()) {
+                            System.out.println("Node mandou tipo 3 para " + table.getToServer());
+                            Packet bla = new Packet(table.getToServer(), ip, 3, p.getDados());
+                            System.out.println("getOrigem " + bla.getOrigem());
+                            queue.add(bla);
                         }
                         table.turnOn(p.getOrigem());
+
                         // table.setisConsuming(true);
                         break;
                     default:

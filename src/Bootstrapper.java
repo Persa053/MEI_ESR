@@ -11,7 +11,7 @@ public class Bootstrapper {
         private Set<String> vizinhos;
         private boolean visitado;
 
-        Nodo(Set<String> viz){
+        Nodo(Set<String> viz) {
             this.vizinhos = viz;
             this.visitado = false;
         }
@@ -42,10 +42,10 @@ public class Bootstrapper {
 
         String[] arr;
 
-        while(sc.hasNextLine()) {
+        while (sc.hasNextLine()) {
 
             arr = sc.nextLine().split("-");
-            for(int i = 0; i < arr.length; i++){
+            for (int i = 0; i < arr.length; i++) {
                 System.out.println(arr[i]);
             }
             Set<String> viz = new TreeSet<>(List.of(arr[1].split(";")));
@@ -61,10 +61,10 @@ public class Bootstrapper {
             Iterator<String> it = vizinhos.iterator();
             StringBuilder res = new StringBuilder();
 
-            while(it.hasNext()) {
+            while (it.hasNext()) {
                 res.append(it.next());
-                if(it.hasNext())
-                    res.append(",");
+                if (it.hasNext())
+                    res.append(";");
             }
             return res.toString();
         } finally {
@@ -72,7 +72,5 @@ public class Bootstrapper {
         }
 
     }
-
-
 
 }

@@ -26,12 +26,7 @@ public class Thread_Server_Reader implements Runnable {
                 DataOutputStream out = new DataOutputStream(s.getOutputStream());
                 DataInputStream in = new DataInputStream(new BufferedInputStream(s.getInputStream()));
 
-                byte[] arr = new byte[4096];
-                int size = in.read(arr, 0, 4096);
-                byte[] content = new byte[size];
-                System.arraycopy(arr, 0, content, 0, size);
-
-                Packet packet = new Packet(content);
+                Packet packet = Packet.deserialize(in);
 
                 System.out.println("[" + Thread.currentThread().getId() + "] Recebi o pacote de " + packet.getOrigem() +
                         " tipo " + packet.getTipo() + "\n");
@@ -52,9 +47,9 @@ public class Thread_Server_Reader implements Runnable {
                         break;
                     case 3:
                         // init Stream
+                        System.out.println("PACKET ORIGEM: " + packet.getOrigem() + "PAcket Destino " + packet.getDest());
                         table.turnOn(packet.getOrigem());
                         System.out.println("init Stream");
-                        
                         break;
                     case 4:
                         // stop Stream

@@ -132,9 +132,10 @@ public class Stream extends JFrame implements ActionListener {
 
         // send the packet as a DatagramPacket over the UDP socket
         Map<String, Boolean> ips = table.getStreamingTable();
-
+        System.out.println("table: " + ips.toString());
         for (String ip : ips.keySet()) {
           if (ips.get(ip)) {
+            System.out.println("Mandamos para: " + ip);
             senddp = new DatagramPacket(packet_bits, packet_length, InetAddress.getByName(ip), RTP_dest_port);
             RTPsocket.send(senddp);
             System.out.println("Send frame #" + imagenb);

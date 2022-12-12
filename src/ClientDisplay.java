@@ -67,7 +67,8 @@ public class ClientDisplay implements Runnable {
     public void actionPerformed(ActionEvent e) {
 
       System.out.println("Play Button pressed !");
-      TCPqueue.add(new Packet(table.getSender(), ip, 3,
+      System.out.println("ToServer="+table.getToServer() + " ip = " + ip);
+      TCPqueue.add(new Packet(table.getToServer(), ip, 3,
           "".getBytes(StandardCharsets.UTF_8)));
       table.setisConsuming(true);
       // start the timers ...
@@ -89,7 +90,7 @@ public class ClientDisplay implements Runnable {
 
       table.setisConsuming(false);
       if (!table.isStreaming()) {
-        TCPqueue.add(new Packet(table.getSender(), ip, 4, "".getBytes(StandardCharsets.UTF_8)));
+        TCPqueue.add(new Packet(table.getToServer(), ip, 4, "".getBytes(StandardCharsets.UTF_8)));
       }
       // exit
       System.exit(0);

@@ -6,12 +6,29 @@ import java.util.stream.Collectors;
 
 public class AddressingTable {
 
-    private String sender;
+    private String toServer;
+    private String toNetwork;
     private Boolean isConsuming;
 
-    // (IP vizinhos/adjacentes, True se querem consumir a String)
+    // (IP vizinhos/adjacentes, True se querem consumir a Stream)
     private Map<String, Boolean> streamingTable;
     private final ReentrantLock lock;
+
+    public String getToNetwork() {
+        return toNetwork;
+    }
+
+    public void setToNetwork(String toNetwork) {
+        this.toNetwork = toNetwork;
+    }
+
+    public String getToServer() {
+        return toServer;
+    }
+
+    public void setToServer(String toServer) {
+        this.toServer = toServer;
+    }
 
     public Boolean getisConsuming() {
         lock.lock();
@@ -29,25 +46,6 @@ public class AddressingTable {
         } finally {
             lock.unlock();
         }
-    }
-
-    public String getSender() {
-        lock.lock();
-        try {
-            return sender;
-        } finally {
-            lock.unlock();
-        }
-    }
-
-    public void setSender(String sender) {
-        lock.lock();
-        try {
-            this.sender = sender;
-        } finally {
-            lock.unlock();
-        }
-
     }
 
     public void turnOn(String ip) {
@@ -89,11 +87,10 @@ public class AddressingTable {
 
     // se estamos a transmitir a stream para algum vizinho
     public Boolean isStreaming() {
-        return this.streamingTable.values().stream().collect(Collectors.toSet()).contains(true);
+        return this.streamingTable.values().stream().collect(Collectors.toSet()).contains(true) || this.isConsuming;
     }
 
-    public AddressingTable(Set<String> neighbours, String sender) {
-        this.sender = sender;
+    public AddressingTable(Set<String> neighbours) {
         this.lock = new ReentrantLock();
         this.isConsuming = false;
         this.streamingTable = new HashMap<>();

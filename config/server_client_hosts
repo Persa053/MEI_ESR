@@ -1,6 +1,7 @@
 127.0.0.1       localhost
 127.0.1.1       xubuncore
-10.0.0.20       client
+10.0.0.1        n3
+10.0.1.20       client
 10.0.0.10       server
 
 # The following lines are desirable for IPv6 capable hosts
