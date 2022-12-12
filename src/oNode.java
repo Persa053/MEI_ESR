@@ -41,8 +41,8 @@ public class oNode {
         TreeSet<String> set = new TreeSet<>(List.of(bs.getVizinhos(ip).split(",")));
         AddressingTable table = new AddressingTable(set, ip);
 
-        Thread tr = new Thread(new Thread_Server_Writer(pq));
-        Thread tw = new Thread(new Thread_Server_Reader(ss, bs, pq, table));
+        Thread tw = new Thread(new Thread_Server_Writer(pq));
+        Thread tr = new Thread(new Thread_Server_Reader(ss, bs, pq, table));
         Thread sender_udp = new Thread(new SenderUDP("default", table));
 
         sender_udp.start();
@@ -54,6 +54,16 @@ public class oNode {
 
         // Nodo pergunta ao server (que vai ser o bootstraper) os vizihnos
         AddressingTable table = recebeViz(ip, ipBootstrapper, pq);
+
+        Thread forwarder = new Thread(new ForwarderRTP(table));
+        Thread tw = new Thread(new Thread_Node_Writer(pq));
+        Thread tr = new Thread(new Thread_Node_Reader(ss, table, pq, ipBootstrapper));
+
+        forwarder.start();
+        tw.start();
+        tr.start();
+
+        // Nodo pergunta ao server (que vai ser o bootstraper) os vizihnos
 
     }
 
@@ -67,9 +77,10 @@ public class oNode {
         // Multiple streams
         // Map<Integer, RTPpacketQueue> queueMap = new HashMap<>();
 
-        Thread tn_reader = new Thread(new Thread_Node_Reader());
+        Thread tn_reader = new Thread(new Thread_Node_Reader(ss, table, queue, ipBootstrapper));
         Thread tn_writer = new Thread(new Thread_Node_Writer(queue));
         Thread rtp_reader = new Thread(new Client_RTP_Receiver(table, RTPqueue));
+
 
         tn_writer.start();
         rtp_reader.start();
