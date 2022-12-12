@@ -27,7 +27,7 @@ public class BeaconSender implements Runnable {
                         DataOutputStream out = new DataOutputStream(s.getOutputStream());
 
                         // send beacon
-                        Packet p = new Packet(vizinho, ip, 5, null);
+                        Packet p = new Packet(vizinho, ip, 10, null);
                         out.write(p.serialize());
                         out.flush();
                         System.out.println("Enviei Beacon para " + p.getDest());

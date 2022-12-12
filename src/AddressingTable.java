@@ -1,3 +1,4 @@
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -11,10 +12,31 @@ public class AddressingTable {
     private Boolean isConsuming;
 
     private int hops;
+    private Duration latency;
 
     // (IP vizinhos/adjacentes, True se querem consumir a Stream)
     private Map<String, Boolean> streamingTable;
     private final ReentrantLock lock;
+
+    public Duration getLatency() {
+        lock.lock();
+        try {
+            return latency;
+        } finally {
+            lock.unlock();
+        }
+
+    }
+
+    public void setLatency(Duration latency) {
+        lock.lock();
+        try {
+            this.latency = latency;
+        } finally {
+            lock.unlock();
+        }
+
+    }
 
     public int getHops() {
         lock.lock();
@@ -154,6 +176,7 @@ public class AddressingTable {
         this.streamingTable = new HashMap<>();
 
         this.hops = Integer.MAX_VALUE;
+        this.latency = Duration.ofMillis(Integer.MAX_VALUE);
 
         for (String n : neighbours)
             this.streamingTable.put(n, false);

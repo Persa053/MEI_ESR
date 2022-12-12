@@ -2,6 +2,7 @@ import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.Socket;
 
 public class Thread_Server_Writer implements Runnable {
@@ -11,7 +12,7 @@ public class Thread_Server_Writer implements Runnable {
         this.queue = queue;
 
     }
-    
+
     public void run() {
         while (true) {
             try {
@@ -25,10 +26,12 @@ public class Thread_Server_Writer implements Runnable {
                 out.write(packet.serialize());
                 out.flush();
 
-
                 in.close();
                 out.close();
                 s.close();
+
+            } catch (ConnectException ignored) {
+                // System.out.println("Não há vizinhos");
             } catch (InterruptedException | IOException e) {
                 throw new RuntimeException(e);
             }

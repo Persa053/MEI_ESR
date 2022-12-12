@@ -9,7 +9,8 @@ import java.util.*;
          * 2 - Server -> Nodo para indicar vizinhos
          * 3 - Cliente -> Server para começar Stream
          * 4 - Cliente -> Server para parar Stream
-         * 5 - Beacon 
+         * 5 - Server Flood 
+         * 10 - Beacon 
          */
 
 public class oNode {
@@ -45,12 +46,15 @@ public class oNode {
         Thread tw = new Thread(new Thread_Server_Writer(pq));
         Thread tr = new Thread(new Thread_Server_Reader(ss, bs, pq, table));
         Thread stream = new Thread(new SenderUDP("default", table));
+        Thread flood = new Thread(new ServerMonitoring(table, pq, ip));
+
         Thread beacon = new Thread(new BeaconSender(table, pq, ip));
 
         tr.start();
         tw.start();
         stream.start();
-        beacon.start();
+        flood.start();
+        // beacon.start();
 
     }
 
@@ -70,7 +74,7 @@ public class oNode {
         forwarder.start();
         tw.start();
         tr.start();
-        beacon.start();
+        // beacon.start();
 
         // Nodo pergunta ao server (que vai ser o bootstraper) os vizihnos
 
@@ -95,7 +99,8 @@ public class oNode {
 
         tn_writer.start();
         rtp_reader.start();
-        beacon.start();
+        tn_reader.start();
+        // beacon.start();
 
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         String line;
