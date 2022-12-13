@@ -35,7 +35,7 @@ public class Thread_Server_Reader implements Runnable {
                     // pedido Vizinhos
                     case 1:
                         String adj = bootstrapper.getVizinhos(packet.getOrigem());
-                        Packet rp = new Packet(packet.getOrigem(), packet.getDest(), 2,
+                        Packet rp = new Packet(this.table.getIps().get(packet.getOrigem()), packet.getDest(), 2,
                                 adj.getBytes(StandardCharsets.UTF_8));
 
                         System.out.println(

@@ -8,20 +8,20 @@ public class Bootstrapper {
     private ReentrantLock lock;
 
     static class Nodo {
-        private Set<String> vizinhos;
+        private Map<String, String> ips;
         private boolean visitado;
 
-        Nodo(Set<String> viz) {
-            this.vizinhos = viz;
+        Nodo(Map<String, String> ips) {
+            this.ips = ips;
             this.visitado = false;
         }
 
-        public Set<String> getVizinhos() {
-            return vizinhos;
+        public Map<String, String> getIps(){
+            return ips;
         }
 
-        public void setVizinhos(Set<String> vizinhos) {
-            this.vizinhos = vizinhos;
+        public void setIps(Map<String, String> ips){
+             this.ips = ips;
         }
 
         public boolean isVisitado() {
@@ -43,14 +43,20 @@ public class Bootstrapper {
         String[] arr;
 
         while (sc.hasNextLine()) {
+            
+            Map<String, String> viz = new HashMap<>();
 
-            arr = sc.nextLine().split("-");
-            for (int i = 0; i < arr.length; i++) {
+            // Split the input string using the "," delimiter
+            String[] substrings = arr = sc.nextLine().split(";");
 
-                System.out.println(arr[i]);
+            // Iterate over the substrings and add them to the Map
+            for (String substring : substrings) {
+                // Split each substring using the "=" delimiter
+                String[] keyValue = substring.split("=");
+                // Add the key and value to the Map
+                viz.put(keyValue[0], keyValue[1]);
             }
 
-            Set<String> viz = new TreeSet<>(List.of(arr[1].split(";")));
             bottstraper.put(arr[0], new Nodo(viz));
         }
     }
@@ -58,13 +64,13 @@ public class Bootstrapper {
     public String getVizinhos(String ip) {
         lock.lock();
         try {
-            Set<String> vizinhos = bottstraper.get(ip).getVizinhos();
+            Set<String> vizinhos = bottstraper.get(ip).getIps().keySet();
             bottstraper.get(ip).setVisitado(true);
             Iterator<String> it = vizinhos.iterator();
             StringBuilder res = new StringBuilder();
 
             while (it.hasNext()) {
-                res.append(it.next());
+                res.append(it.next()).append("=").append(bottstraper.get(ip).getIps().get(it.next()));
                 if (it.hasNext())
                     res.append(";");
             }
@@ -72,6 +78,7 @@ public class Bootstrapper {
         } finally {
             lock.unlock();
         }
+
 
     }
 

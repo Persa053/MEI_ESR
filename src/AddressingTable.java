@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 public class AddressingTable {
 
+    private Map<String, String> ips;
     private String toServer;
     private String provider;
 
@@ -52,6 +53,16 @@ public class AddressingTable {
             lock.unlock();
         }
     }
+
+    public Map<String, String> getIps() {
+        lock.lock();
+        try {
+            return this.ips;
+        } finally {
+            lock.unlock();
+        }
+    }
+
 
     public Duration getLatency(String ip) {
         lock.lock();
@@ -302,7 +313,7 @@ public class AddressingTable {
         }
     }
 
-    public AddressingTable(Set<String> neighbours) {
+    public AddressingTable(Map<String, String> neighbours) {
         this.lock = new ReentrantLock();
         this.isConsuming = false;
         this.streamingTable = new HashMap<>();
@@ -312,8 +323,14 @@ public class AddressingTable {
 
         this.toServer = null;
         this.provider = null;
+        this.ips = new HashMap<>();
 
-        for (String n : neighbours) {
+        for (String s : neighbours.keySet()) {
+            this.ips.put(neighbours.get(s), s);
+        }
+
+
+        for (String n : neighbours.values()) {
             this.streamingTable.put(n, false);
             this.hops.put(n, Integer.MAX_VALUE);
             this.latencies.put(n, Duration.ofMillis(Integer.MAX_VALUE));

@@ -42,8 +42,19 @@ public class oNode {
 
     public static void server(String ip, ServerSocket ss, Bootstrapper bs, PacketQueue pq) {
 
-        TreeSet<String> set = new TreeSet<>(List.of(bs.getVizinhos(ip).split(",")));
-        AddressingTable table = new AddressingTable(set);
+        Map<String, String> viz = new HashMap<>();
+        String[] arr;
+            // Split the input string using the ";" delimiter
+        String[] substrings = arr = bs.getVizinhos(ip).split(";");
+
+            // Iterate over the substrings and add them to the Map
+        for (String substring : substrings) {
+            // Split each substring using the "=" delimiter
+            String[] keyValue = substring.split("=");
+            // Add the key and value to the Map
+            viz.put(keyValue[0], keyValue[1]);
+        }
+        AddressingTable table = new AddressingTable(viz);
 
         System.out.println(table.getVizinhos().toString());
 
