@@ -19,10 +19,10 @@ public class oNode {
 
         String ip = InetAddress.getLocalHost().getHostAddress();
         System.out.println("ip = " + ip);
-        ServerSocket ss = new ServerSocket(8080);
+        ServerSocket ss = new ServerSocket(8090);
 
         if (args[0].equals("server")) {
-            Bootstrapper bs = new Bootstrapper("../config/teste1_bootstrapper");
+            Bootstrapper bs = new Bootstrapper("config/teste1_bootstrapper");
             // Bootstrapper bs = new Bootstrapper("../config/server_client_bootstrapper",
             // ip);
             PacketQueue pq = new PacketQueue();
@@ -158,9 +158,10 @@ public class oNode {
 
         String dados = new String(rp.getDados(), StandardCharsets.UTF_8);
         Set<String> vizinhos = new TreeSet<>(List.of(dados.split(";")));
+        Map<String, String> viz = new HashMap<>();
 
         System.out.println("Vizinhos=" + vizinhos.toString());
 
-        return new AddressingTable(vizinhos);
+        return new AddressingTable(viz);
     }
 }

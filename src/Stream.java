@@ -99,7 +99,7 @@ public class Stream extends JFrame implements ActionListener {
     if (f.exists()) {
       new Stream(filename, table);
     } else {
-      VideoFileName = "../files/movie.Mjpeg";
+      VideoFileName = "files/movie.Mjpeg";
       System.out.println("Servidor: parametro não foi indicado. VideoFileName = " + VideoFileName);
       new Stream(VideoFileName, table);
     }

@@ -44,20 +44,31 @@ public class Bootstrapper {
 
         while (sc.hasNextLine()) {
             
-            Map<String, String> viz = new HashMap<>();
+
 
             // Split the input string using the "," delimiter
-            String[] substrings = arr = sc.nextLine().split(";");
 
-            // Iterate over the substrings and add them to the Map
-            for (String substring : substrings) {
-                // Split each substring using the "=" delimiter
-                String[] keyValue = substring.split("=");
-                // Add the key and value to the Map
-                viz.put(keyValue[0], keyValue[1]);
+            String ip;
+            boolean flag = true;
+            while (sc.hasNextLine()) {
+
+                arr = sc.nextLine().split(";");
+                String[] keyValue = arr[0].split("=");
+                ip = keyValue[0];
+                Map<String, String> viz = new HashMap<>();
+
+                // Iterate over the substrings and add them to the Map
+                for (String substring : arr) {
+                    // Split each substring using the "=" delimiter
+                    keyValue = substring.split("=");
+                    // Add the key and value to the Map
+                    viz.put(keyValue[0], keyValue[1]);
+                }
+
+                    bottstraper.put(ip, new Nodo(viz));
             }
 
-            bottstraper.put(arr[0], new Nodo(viz));
+
         }
     }
 
