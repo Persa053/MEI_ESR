@@ -47,7 +47,8 @@ public class Thread_Server_Reader implements Runnable {
                         break;
                     case 3:
                         // init Stream
-                        System.out.println("PACKET ORIGEM: " + packet.getOrigem() + "PAcket Destino " + packet.getDest());
+                        System.out
+                                .println("PACKET ORIGEM: " + packet.getOrigem() + "Packet Destino " + packet.getDest());
                         table.turnOn(packet.getOrigem());
                         System.out.println("init Stream");
                         break;

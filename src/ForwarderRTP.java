@@ -24,18 +24,19 @@ public class ForwarderRTP implements Runnable {
 
                 RTPsocket.receive(rcvdp);
 
-                // no futuro, usar para verificar ID da stream
                 // RTPpacket rtp_packet = new RTPpacket(rcvdp.getData(), rcvdp.getLength());
 
                 Map<String, Boolean> ips = table.getStreamingTable();
                 for (String ip : ips.keySet()) {
 
-                    int RTP_dest_port = 25000;
-                    DatagramPacket senddp = new DatagramPacket(rcvdp.getData(), rcvdp.getData().length,
-                            InetAddress.getByName(ip), RTP_dest_port);
+                    if (ips.get(ip)) {
+                        int RTP_dest_port = 25000;
+                        DatagramPacket senddp = new DatagramPacket(rcvdp.getData(), rcvdp.getData().length,
+                                InetAddress.getByName(ip), RTP_dest_port);
+                        System.out.println("Sent RTP packet");
+                        RTPsocket.send(senddp);
+                    }
 
-                    System.out.println("Sent RTP packet");
-                    RTPsocket.send(senddp);
                 }
 
             }

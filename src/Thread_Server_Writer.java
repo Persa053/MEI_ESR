@@ -17,7 +17,6 @@ public class Thread_Server_Writer implements Runnable {
         while (true) {
             try {
                 Packet packet = queue.remove();
-
                 Socket s = new Socket(packet.getDest(), 8080);
 
                 DataOutputStream out = new DataOutputStream(s.getOutputStream());

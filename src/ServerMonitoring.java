@@ -20,18 +20,20 @@ public class ServerMonitoring implements Runnable {
         // TODO Auto-generated method stub
 
         while (true) {
-            Set<String> vizinhos = table.getVizinhos();
-
-            for (String vizinho : vizinhos) {
-                Instant start = Instant.now();
-                queue.add(new Packet(vizinho, ip, 5,
-                        ("1 " + start.toString() + " " + Duration.ZERO.toString()).getBytes(StandardCharsets.UTF_8)));
-            }
-
             try {
                 Thread.sleep(5000);
+
+                Set<String> vizinhos = table.getVizinhos();
+
+                for (String vizinho : vizinhos) {
+                    Instant start = Instant.now();
+                    queue.add(new Packet(vizinho, ip, 5,
+                            ("1 " + start.toString() + " " + Duration.ZERO.toString())
+                                    .getBytes(StandardCharsets.UTF_8)));
+                }
+
             } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
+
                 e.printStackTrace();
             }
         }

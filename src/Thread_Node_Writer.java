@@ -31,7 +31,7 @@ public class Thread_Node_Writer implements Runnable {
                 s.close();
 
             } catch (ConnectException ignored) {
-                System.out.println("Este vizinho não está ligado");
+                // System.out.println("Este vizinho não está ligado");
             } catch (InterruptedException | IOException e) {
                 throw new RuntimeException(e);
             }

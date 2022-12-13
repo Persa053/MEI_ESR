@@ -18,23 +18,25 @@ public class oNode {
     public static void main(String[] args) throws IOException {
 
         String ip = InetAddress.getLocalHost().getHostAddress();
-        System.out.println(ip);
+        System.out.println("ip = " + ip);
         ServerSocket ss = new ServerSocket(8080);
 
         if (args[0].equals("server")) {
-
-            // Bootstrapper bs = new Bootstrapper("../config/teste1_bootstrapper");
-            Bootstrapper bs = new Bootstrapper("../config/server_client_bootstrapper");
+            Bootstrapper bs = new Bootstrapper("../config/teste1_bootstrapper");
+            // Bootstrapper bs = new Bootstrapper("../config/server_client_bootstrapper",
+            // ip);
             PacketQueue pq = new PacketQueue();
             server(ip, ss, bs, pq);
 
-        } else if (args[0].equals("node") && args.length == 2)
-            nodo(ip, args[1], ss, new PacketQueue());
+        } else if (args.length == 2) {
 
-        else if (args[0].equals("cliente") && args.length == 2)
-            cliente(ip, args[1], ss, new PacketQueue());
+            if (args[0].equals("node")) {
+                nodo(ip, args[1], ss, new PacketQueue());
 
-        else
+            } else if (args[0].equals("cliente"))
+                cliente(ip, args[1], ss, new PacketQueue());
+
+        } else
             System.out.println("Número de argumentos errrado");
     }
 
@@ -42,6 +44,8 @@ public class oNode {
 
         TreeSet<String> set = new TreeSet<>(List.of(bs.getVizinhos(ip).split(",")));
         AddressingTable table = new AddressingTable(set);
+
+        System.out.println(table.getVizinhos().toString());
 
         Thread tw = new Thread(new Thread_Server_Writer(pq));
         Thread tr = new Thread(new Thread_Server_Reader(ss, bs, pq, table));
@@ -62,8 +66,7 @@ public class oNode {
 
         // Nodo pergunta ao server (que vai ser o bootstraper) os vizihnos
         AddressingTable table = recebeViz(ip, ipBootstrapper, pq);
-        table.setToNetwork("10.0.1.20");
-        table.setToServer(ipBootstrapper);
+        // table.setToServer(ipBootstrapper);
 
         Thread forwarder = new Thread(new ForwarderRTP(table));
         Thread tw = new Thread(new Thread_Node_Writer(pq));
@@ -85,7 +88,6 @@ public class oNode {
 
         // Cliente pergunta ao server (que vai ser o bootstraper) os vizihnos
         AddressingTable table = recebeViz(ip, ipBootstrapper, queue);
-        table.setToServer("10.0.0.1");
         RTPpacketQueue RTPqueue = new RTPpacketQueue();
 
         // Multiple streams

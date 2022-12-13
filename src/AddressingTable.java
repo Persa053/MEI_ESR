@@ -11,46 +11,46 @@ public class AddressingTable {
     private String toNetwork;
     private Boolean isConsuming;
 
-    private int hops;
-    private Duration latency;
+    private Map<String, Duration> latencies;
+    private Map<String, Integer> hops;
 
     // (IP vizinhos/adjacentes, True se querem consumir a Stream)
     private Map<String, Boolean> streamingTable;
     private final ReentrantLock lock;
 
-    public Duration getLatency() {
+    public Duration getLatency(String ip) {
         lock.lock();
         try {
-            return latency;
+            return this.latencies.get(ip);
         } finally {
             lock.unlock();
         }
 
     }
 
-    public void setLatency(Duration latency) {
+    public void setLatency(String ip, Duration latency) {
         lock.lock();
         try {
-            this.latency = latency;
+            this.latencies.put(ip, latency);
         } finally {
             lock.unlock();
         }
 
     }
 
-    public int getHops() {
+    public int getHops(String ip) {
         lock.lock();
         try {
-            return hops;
+            return this.hops.get(ip);
         } finally {
             lock.unlock();
         }
     }
 
-    public void setHops(int hops) {
+    public void setHops(String ip, int hops) {
         lock.lock();
         try {
-            this.hops = hops;
+            this.hops.put(ip, hops);
         } finally {
             lock.unlock();
         }
@@ -135,7 +135,34 @@ public class AddressingTable {
         } finally {
             lock.unlock();
         }
+    }
 
+    public Set<String> getVizinhosClone() {
+        lock.lock();
+        try {
+            return this.streamingTable.keySet().stream().map(String::new).collect(Collectors.toSet());
+        } finally {
+            lock.unlock();
+        }
+
+    }
+
+    public Map<String, Duration> getLatencies() {
+        lock.lock();
+        try {
+            return this.latencies;
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public Map<String, Integer> getHopsTable() {
+        lock.lock();
+        try {
+            return this.hops;
+        } finally {
+            lock.unlock();
+        }
     }
 
     public Map<String, Boolean> getStreamingTable() {
@@ -175,11 +202,11 @@ public class AddressingTable {
         this.isConsuming = false;
         this.streamingTable = new HashMap<>();
 
-        this.hops = Integer.MAX_VALUE;
-        this.latency = Duration.ofMillis(Integer.MAX_VALUE);
-
-        for (String n : neighbours)
+        for (String n : neighbours) {
             this.streamingTable.put(n, false);
+            this.hops.put(n, Integer.MAX_VALUE);
+            this.latencies.put(n, Duration.ofMillis(Integer.MAX_VALUE));
+        }
 
     }
 }

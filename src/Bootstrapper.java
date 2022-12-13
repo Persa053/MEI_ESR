@@ -46,8 +46,10 @@ public class Bootstrapper {
 
             arr = sc.nextLine().split("-");
             for (int i = 0; i < arr.length; i++) {
+
                 System.out.println(arr[i]);
             }
+
             Set<String> viz = new TreeSet<>(List.of(arr[1].split(";")));
             bottstraper.put(arr[0], new Nodo(viz));
         }
