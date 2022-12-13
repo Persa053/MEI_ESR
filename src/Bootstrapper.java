@@ -65,7 +65,7 @@ public class Bootstrapper {
                     viz.put(keyValue[0], keyValue[1]);
                 }
 
-                    bottstraper.put(ip, new Nodo(viz));
+                    this.bottstraper.put(ip, new Nodo(viz));
             }
 
 
@@ -75,15 +75,16 @@ public class Bootstrapper {
     public String getVizinhos(String ip) {
         lock.lock();
         try {
-            Set<String> vizinhos = bottstraper.get(ip).getIps().keySet();
-            bottstraper.get(ip).setVisitado(true);
+            Set<String> vizinhos = this.bottstraper.get(ip).getIps().keySet();
+            this.bottstraper.get(ip).setVisitado(true);
             Iterator<String> it = vizinhos.iterator();
             StringBuilder res = new StringBuilder();
 
             while (it.hasNext()) {
-                res.append(it.next()).append("=").append(bottstraper.get(ip).getIps().get(it.next()));
-                if (it.hasNext())
-                    res.append(";");
+                String a = it.next();
+                res.append(a).append("=");
+                res.append(bottstraper.get(ip).getIps().get(a));
+                res.append(";");
             }
             return res.toString();
         } finally {
