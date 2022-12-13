@@ -28,7 +28,6 @@ public class ForwarderRTP implements Runnable {
 
                 Map<String, Boolean> ips = table.getStreamingTable();
                 for (String ip : ips.keySet()) {
-
                     if (ips.get(ip)) {
                         int RTP_dest_port = 25000;
                         DatagramPacket senddp = new DatagramPacket(rcvdp.getData(), rcvdp.getData().length,

@@ -1,4 +1,5 @@
 import java.time.Duration;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -8,13 +9,14 @@ import java.util.stream.Collectors;
 public class AddressingTable {
 
     private String toServer;
+    private String provider;
+
     private String toNetwork;
     private Boolean isConsuming;
 
-    private String prev_sender;
-
     private Map<String, Duration> latencies;
     private Map<String, Integer> hops;
+    private Map<String, Instant> floodTable;
 
     // Controlo de flooding para evitar loops infinitos
     // ServerIP, (Vizinho, True se ja reencaminhamos)
@@ -22,6 +24,34 @@ public class AddressingTable {
     // (IP vizinhos/adjacentes, True se querem consumir a Stream)
     private Map<String, Boolean> streamingTable;
     private final ReentrantLock lock;
+
+    public String getProvider() {
+        lock.lock();
+        try {
+            return this.provider;
+        } finally {
+            lock.unlock();
+        }
+
+    }
+
+    public void setProvider(String provider) {
+        lock.lock();
+        try {
+            this.provider = provider;
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public Map<String, Instant> getFloodTable() {
+        lock.lock();
+        try {
+            return this.floodTable;
+        } finally {
+            lock.unlock();
+        }
+    }
 
     public Duration getLatency(String ip) {
         lock.lock();
@@ -181,7 +211,22 @@ public class AddressingTable {
 
     // se estamos a transmitir a stream para algum vizinho
     public Boolean isStreaming() {
-        return this.streamingTable.values().stream().collect(Collectors.toSet()).contains(true) || this.isConsuming;
+
+        lock.lock();
+        try {
+            Set<String> bla = this.getVizinhosClone();
+            bla.remove(this.getProvider());
+
+            for (String s : bla)
+                if (this.streamingTable.get(s))
+                    return true;
+
+            return false;
+
+        } finally {
+            lock.unlock();
+        }
+
     }
 
     public Boolean getEstado(String ip) {
@@ -202,7 +247,7 @@ public class AddressingTable {
         }
     }
 
-    public void UpdateRoute(String sender, int hops, Duration timeElapsed) {
+    public void UpdateRoute(String sender, String server, int hops, Duration timeElapsed) {
 
         int best_route_hops;
         Duration best_route_duration;
@@ -218,12 +263,16 @@ public class AddressingTable {
         int val_superior = limite_superior.compareTo(timeElapsed);
         if (val_inferior > 0) {
             this.setToServer(sender);
+            this.setProvider(server);
             System.out.println("Route mais rápida encontrada");
         } else if (val_superior > 0 && best_route_hops > hops) {
             System.out.println("prev_best_route = " + this.getToServer() + "   best_route_hops = " + best_route_hops
                     + " sender hops = " + hops);
             // 10.0.2.1 hops = 2 hops = 2
             this.setToServer(sender);
+            this.setProvider(server);
+            this.setHops(sender, hops);
+            this.setLatency(sender, timeElapsed);
             System.out.println("Diferença de tempo < 1 sec, mas menos hops");
         } else {
             System.out.println("Não é mais rápida");
@@ -231,7 +280,7 @@ public class AddressingTable {
 
     }
 
-    public void UpdateRoutingTable(String sender, int hops, Duration timeElapsed) {
+    public void UpdateRoutingTable(String sender, String server, int hops, Duration timeElapsed) {
 
         String best_route_ip;
 
@@ -239,15 +288,16 @@ public class AddressingTable {
 
         if (best_route_ip == null) {
             this.setToServer(sender);
+            this.setProvider(server);
             this.setLatency(sender, timeElapsed);
             this.setHops(sender, hops);
             System.out.println("First route to Server found");
 
         } else if (!sender.equals(best_route_ip)) {
-            UpdateRoute(sender, hops, timeElapsed);
+            UpdateRoute(sender, server, hops, timeElapsed);
         } else if (sender.equals(best_route_ip)) {
             for (String ip : this.getVizinhosClone()) {
-                UpdateRoute(ip, this.getHops(ip), this.getLatency(ip));
+                UpdateRoute(ip, server, this.getHops(ip), this.getLatency(ip));
             }
         }
     }
@@ -258,10 +308,10 @@ public class AddressingTable {
         this.streamingTable = new HashMap<>();
         this.hops = new HashMap<>();
         this.latencies = new HashMap<>();
+        this.floodTable = new HashMap<>();
 
         this.toServer = null;
-
-        this.prev_sender = null;
+        this.provider = null;
 
         for (String n : neighbours) {
             this.streamingTable.put(n, false);

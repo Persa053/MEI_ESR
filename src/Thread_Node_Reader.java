@@ -39,20 +39,32 @@ public class Thread_Node_Reader implements Runnable {
 
                 switch (p.getTipo()) {
                     case 3:
+                        System.out.println("\n\n\n");
                         System.out.println("Node recebeu tipo 3 de " + p.getOrigem());
                         if (!table.isStreaming()) {
+                            System.out.println("NODE MANDOU TIPO 3 PARA " + table.getToServer());
+                            System.out.println("\n\n\n");
+                            Packet rp = new Packet(table.getToServer(), ip, 3, p.getDados());
+                            queue.add(rp);
                             System.out.println("Node mandou tipo 3 para " + table.getToServer());
-                            Packet bla = new Packet(table.getToServer(), ip, 3, p.getDados());
-                            System.out.println("getOrigem " + bla.getOrigem());
-                            queue.add(bla);
                         }
                         table.turnOn(p.getOrigem());
 
                         // table.setisConsuming(true);
                         break;
+                    case 4:
+                        System.out.println("Node recebeu tipo 4 de " + p.getOrigem());
+                        table.turnOff(p.getOrigem());
+                        if (!table.isStreaming()) {
+                            Packet rp = new Packet(table.getToServer(), ip, 4, p.getDados());
+                            queue.add(rp);
+                            System.out.println("Node mandou tipo 4 para " + table.getToServer());
+                        }
+                        break;
                     case 5:
 
                         String sender = p.getOrigem();
+                        System.out.println("GET ORIGEM= " + sender);
 
                         String dados = new String(p.getDados(), StandardCharsets.UTF_8);
                         // "1 start"
@@ -64,44 +76,61 @@ public class Thread_Node_Reader implements Runnable {
                         int hops = Integer.parseInt(array[1]);
 
                         Instant start = Instant.parse(array[2]);
+                        // Instant wave = Instant.parse(array[2]);
                         Duration prev_latency = Duration.parse(array[3]);
+
                         // System.out.println("prev_latency = " + prev_latency);
 
+                        System.out.println("STARTTTTTTTTT = " + start.toString());
                         Duration timeElapsed = Duration.between(start, Instant.now());
-
+                        System.out.println("Tempo de transmissão entre nodos=" + timeElapsed);
                         timeElapsed = timeElapsed.plus(prev_latency);
-                        System.out.println("Tempo da rota = " + timeElapsed);
+                        System.out.println("prev_latency = " + prev_latency);
+                        System.out.println("timeElapsed = " + timeElapsed);
+
+                        String server = array[4];
+                        Instant wave = Instant.parse(array[5]);
+                        Map<String, Instant> floodTable2 = table.getFloodTable();
 
                         // update new route ---------------------
                         table.setLatency(sender, timeElapsed);
                         table.setHops(sender, hops);
                         System.out.println("Route " + sender + " updated");
-                        // --------------------------------------
 
-                        table.UpdateRoutingTable(sender, hops, timeElapsed);
-
-                        // reencaminha para todos menos o que lhe enviou
-                        Set<String> vizinhos = table.getVizinhosClone();
-                        vizinhos.remove(p.getOrigem());
-
-                        for (String vizinho : vizinhos) {
-                            if (!prev_sender.equals(vizinho)) {
-                                start = Instant.now();
-
-                                queue.add(new Packet(vizinho, ip, 5,
-                                        (p.getOrigem() + " " + (hops + 1) + " " + start.toString() + " "
-                                                + table.getLatency(table.getToServer()).toString())
-                                                .getBytes(StandardCharsets.UTF_8)));
-
-                            }
-
-                        }
+                        table.UpdateRoutingTable(sender, server, hops, timeElapsed);
 
                         System.out
                                 .println("Best route: " + table.getToServer() + "\nhops="
                                         + table.getHops(table.getToServer())
                                         + " tempo=" + table.getLatency(table.getToServer()));
+
+                        // --------------------------------------
+
+                        Map<String, Instant> floodTable = table.getFloodTable();
+
+                        System.out.println("FloodTable=" + floodTable.toString());
                         System.out.println("-------------------------------");
+                        // Se não existir o server na tabela ou for uma nova wave reencaminha o pacote
+                        if (!floodTable.keySet().contains(server) || floodTable.get(server).isBefore(wave)) {
+
+                            floodTable.put(server, wave);
+                            // reencaminha para todos menos o que lhe enviou
+                            Set<String> vizinhos = table.getVizinhosClone();
+                            vizinhos.remove(p.getOrigem());
+                            vizinhos.remove(prev_sender);
+
+                            for (String vizinho : vizinhos) {
+                                Instant current_start = Instant.now();
+                                queue.add(new Packet(vizinho, ip, 5,
+                                        (p.getOrigem() + " "
+                                                + (hops + 1) + " "
+                                                + current_start.toString() + " "
+                                                + timeElapsed.toString() + " "
+                                                + server + " "
+                                                + wave.toString())
+                                                .getBytes(StandardCharsets.UTF_8)));
+                            }
+                        }
                         break;
                     case 10:
                         System.out.println("Beacon");

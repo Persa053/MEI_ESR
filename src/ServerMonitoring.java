@@ -27,8 +27,14 @@ public class ServerMonitoring implements Runnable {
 
                 for (String vizinho : vizinhos) {
                     Instant start = Instant.now();
+                    Instant wave = Instant.now();
+                    String server = ip;
                     queue.add(new Packet(vizinho, ip, 5,
-                            (ip + " 1 " + start.toString() + " " + Duration.ZERO.toString())
+                            (ip + " 1 "
+                                    + start.toString() + " "
+                                    + Duration.ZERO.toString() + " "
+                                    + server + " "
+                                    + wave.toString())
                                     .getBytes(StandardCharsets.UTF_8)));
                 }
 
