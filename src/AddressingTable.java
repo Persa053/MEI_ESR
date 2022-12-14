@@ -329,7 +329,6 @@ public class AddressingTable {
         this.hops = new HashMap<>();
         this.latencies = new HashMap<>();
         this.floodTable = new HashMap<>();
-        this.ips = neighbours;
 
         this.toServer = null;
         this.provider = null;
@@ -340,11 +339,12 @@ public class AddressingTable {
         }
 
 
-        for (String n : neighbours.values()) {
+        for (String n : ips.keySet()) {
             this.streamingTable.put(n, false);
             this.hops.put(n, Integer.MAX_VALUE);
             this.latencies.put(n, Duration.ofMillis(Integer.MAX_VALUE));
         }
+        System.out.println(this.streamingTable.toString());
 
     }
 
