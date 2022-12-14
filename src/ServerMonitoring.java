@@ -17,7 +17,6 @@ public class ServerMonitoring implements Runnable {
 
     @Override
     public void run() {
-        // TODO Auto-generated method stub
 
         while (true) {
             try {
@@ -29,7 +28,7 @@ public class ServerMonitoring implements Runnable {
                     Instant start = Instant.now();
                     Instant wave = Instant.now();
                     String server = ip;
-                    queue.add(new Packet(vizinho, ip, 5,
+                    queue.add(new Packet(vizinho, table.getIp(vizinho), 5,
                             (ip + " 1 "
                                     + start.toString() + " "
                                     + Duration.ZERO.toString() + " "

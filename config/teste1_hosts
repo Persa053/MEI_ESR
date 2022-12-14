@@ -6,7 +6,7 @@
 10.0.2.1        n4
 10.0.1.1        n5
 10.0.0.20       C1
-10.0.4.20       C1
+10.0.4.20       C2
 
 # The following lines are desirable for IPv6 capable hosts
 ::1     ip6-localhost ip6-loopback

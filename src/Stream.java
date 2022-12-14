@@ -8,12 +8,10 @@
 import java.io.*;
 import java.net.*;
 import java.util.Map;
-import java.util.Set;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.Timer;
-import javax.swing.plaf.TreeUI;
 
 public class Stream extends JFrame implements ActionListener {
 
@@ -99,7 +97,7 @@ public class Stream extends JFrame implements ActionListener {
     if (f.exists()) {
       new Stream(filename, table);
     } else {
-      VideoFileName = "files/movie.Mjpeg";
+      VideoFileName = "../files/movie.Mjpeg";
       System.out.println("Servidor: parametro não foi indicado. VideoFileName = " + VideoFileName);
       new Stream(VideoFileName, table);
     }

@@ -69,6 +69,7 @@ public class Bootstrapper {
 
 
         }
+        sc.close();
     }
 
     public String getVizinhos(String ip) {

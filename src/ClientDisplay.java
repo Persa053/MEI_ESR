@@ -5,12 +5,8 @@
    colocar o cliente primeiro a correr que o servidor dispara logo!
    ---------------------- */
 
-import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -21,9 +17,7 @@ public class ClientDisplay implements Runnable {
   // GUI
   // ----
   private JFrame f = new JFrame("Cliente de Testes");
-  private JButton setupButton = new JButton("Setup");
   private JButton playButton = new JButton("Play");
-  private JButton pauseButton = new JButton("Pause");
   private JButton tearButton = new JButton("Teardown");
   private JPanel mainPanel = new JPanel();
   private JPanel buttonPanel = new JPanel();
@@ -68,7 +62,7 @@ public class ClientDisplay implements Runnable {
 
       System.out.println("Play Button pressed !");
       System.out.println("ToServer="+table.getToServer() + " ip = " + ip);
-      TCPqueue.add(new Packet(table.getToServer(), ip, 3,
+      TCPqueue.add(new Packet(table.getToServer(), table.getIp(table.getToServer()), 3,
           "".getBytes(StandardCharsets.UTF_8)));
       table.setisConsuming(true);
       // start the timers ...
@@ -90,7 +84,7 @@ public class ClientDisplay implements Runnable {
 
       table.setisConsuming(false);
       if (!table.isStreaming()) {
-        TCPqueue.add(new Packet(table.getToServer(), ip, 4, "".getBytes(StandardCharsets.UTF_8)));
+        TCPqueue.add(new Packet(table.getToServer(), table.getIp(table.getToServer()), 4, "".getBytes(StandardCharsets.UTF_8)));
       }
       // exit
       System.exit(0);
@@ -131,7 +125,6 @@ public class ClientDisplay implements Runnable {
         icon = new ImageIcon(image);
         iconLabel.setIcon(icon);
       } catch (InterruptedException e1) {
-        // TODO Auto-generated catch block
         e1.printStackTrace();
       }
     }

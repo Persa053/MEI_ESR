@@ -5,18 +5,17 @@ import java.util.Set;
 public class BeaconSender implements Runnable {
 
     private AddressingTable table;
-    private PacketQueue TCPqueue;
+    // private PacketQueue TCPqueue;
     private String ip;
 
     public BeaconSender(AddressingTable table, PacketQueue TCPqueue, String ip) {
         this.table = table;
-        this.TCPqueue = TCPqueue;
+        // this.TCPqueue = TCPqueue;
         this.ip = ip;
     }
 
     @Override
     public void run() {
-        // TODO Auto-generated method stub
 
         while (true) {
             try {
@@ -36,7 +35,6 @@ public class BeaconSender implements Runnable {
                         s.close();
 
                     } catch (Exception e) {
-                        // TODO: handle exception
                         System.out.println("Nao há vizinhos conectados..");
 
                     }
@@ -44,7 +42,6 @@ public class BeaconSender implements Runnable {
 
                 Thread.sleep(3000);
             } catch (Exception e) {
-                // TODO: handle exception
                 e.printStackTrace();
             }
         }

@@ -7,8 +7,6 @@ import java.nio.charset.StandardCharsets;
 import java.io.BufferedInputStream;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -44,7 +42,7 @@ public class Thread_Node_Reader implements Runnable {
                         if (!table.isStreaming()) {
                             System.out.println("NODE MANDOU TIPO 3 PARA " + table.getToServer());
                             System.out.println("\n\n\n");
-                            Packet rp = new Packet(table.getToServer(), ip, 3, p.getDados());
+                            Packet rp = new Packet(table.getToServer(), table.getIp(p.getOrigem()), 3, p.getDados());
                             queue.add(rp);
                             System.out.println("Node mandou tipo 3 para " + table.getToServer());
                         }
@@ -56,7 +54,7 @@ public class Thread_Node_Reader implements Runnable {
                         System.out.println("Node recebeu tipo 4 de " + p.getOrigem());
                         table.turnOff(p.getOrigem());
                         if (!table.isStreaming()) {
-                            Packet rp = new Packet(table.getToServer(), ip, 4, p.getDados());
+                            Packet rp = new Packet(table.getToServer(), table.getIp(p.getOrigem()), 4, p.getDados());
                             queue.add(rp);
                             System.out.println("Node mandou tipo 4 para " + table.getToServer());
                         }
@@ -90,7 +88,7 @@ public class Thread_Node_Reader implements Runnable {
 
                         String server = array[4];
                         Instant wave = Instant.parse(array[5]);
-                        Map<String, Instant> floodTable2 = table.getFloodTable();
+                        // Map<String, Instant> floodTable2 = table.getFloodTable();
 
                         // update new route ---------------------
                         table.setLatency(sender, timeElapsed);
@@ -121,7 +119,7 @@ public class Thread_Node_Reader implements Runnable {
 
                             for (String vizinho : vizinhos) {
                                 Instant current_start = Instant.now();
-                                queue.add(new Packet(vizinho, ip, 5,
+                                queue.add(new Packet(vizinho, table.getIp(vizinho), 5,
                                         (p.getOrigem() + " "
                                                 + (hops + 1) + " "
                                                 + current_start.toString() + " "

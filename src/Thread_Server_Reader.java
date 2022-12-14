@@ -9,13 +9,13 @@ import java.nio.charset.StandardCharsets;
 public class Thread_Server_Reader implements Runnable {
     private ServerSocket ss;
     private Bootstrapper bootstrapper;
-    private PacketQueue queue;
+    // private PacketQueue queue;
     private AddressingTable table;
 
     public Thread_Server_Reader(ServerSocket ss, Bootstrapper bootstrapper, PacketQueue queue, AddressingTable table) {
         this.ss = ss;
         this.bootstrapper = bootstrapper;
-        this.queue = queue;
+        // this.queue = queue;
         this.table = table;
     }
 

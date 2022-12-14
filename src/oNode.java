@@ -19,10 +19,10 @@ public class oNode {
 
         String ip = InetAddress.getLocalHost().getHostAddress();
         System.out.println("ip = " + ip);
-        ServerSocket ss = new ServerSocket(8090);
+        ServerSocket ss = new ServerSocket(8080);
 
         if (args[0].equals("server")) {
-            Bootstrapper bs = new Bootstrapper("config/teste1_bootstrapper");
+            Bootstrapper bs = new Bootstrapper("../config/teste1_bootstrapper");
             // Bootstrapper bs = new Bootstrapper("../config/server_client_bootstrapper",
             // ip);
             PacketQueue pq = new PacketQueue();
@@ -43,9 +43,8 @@ public class oNode {
     public static void server(String ip, ServerSocket ss, Bootstrapper bs, PacketQueue pq) {
 
         Map<String, String> viz = new HashMap<>();
-        String[] arr;
             // Split the input string using the ";" delimiter
-        String[] substrings = arr = bs.getVizinhos(ip).split(";");
+        String[] substrings = bs.getVizinhos(ip).split(";");
 
             // Iterate over the substrings and add them to the Map
         for (String substring : substrings) {
@@ -62,8 +61,6 @@ public class oNode {
         Thread tr = new Thread(new Thread_Server_Reader(ss, bs, pq, table));
         Thread stream = new Thread(new SenderUDP("default", table));
         Thread flood = new Thread(new ServerMonitoring(table, pq, ip));
-
-        Thread beacon = new Thread(new BeaconSender(table, pq, ip));
 
         tr.start();
         tw.start();
@@ -83,7 +80,7 @@ public class oNode {
         Thread tw = new Thread(new Thread_Node_Writer(pq));
         Thread tr = new Thread(new Thread_Node_Reader(ss, table, pq, ip));
 
-        Thread beacon = new Thread(new BeaconSender(table, pq, ip));
+        // Thread beacon = new Thread(new BeaconSender(table, pq, ip));
 
         forwarder.start();
         tw.start();
@@ -108,7 +105,7 @@ public class oNode {
         Thread tn_writer = new Thread(new Thread_Node_Writer(queue));
         Thread rtp_reader = new Thread(new Client_RTP_Receiver(table, RTPqueue));
 
-        Thread beacon = new Thread(new BeaconSender(table, queue, ip));
+        // Thread beacon = new Thread(new BeaconSender(table, queue, ip));
 
         tn_writer.start();
         rtp_reader.start();

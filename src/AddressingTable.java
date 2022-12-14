@@ -63,6 +63,15 @@ public class AddressingTable {
         }
     }
 
+    public String getIp(String ips) {
+        lock.lock();
+        try {
+            return this.ips.get(ips);
+        } finally {
+            lock.unlock();
+        }
+    }
+
 
     public Duration getLatency(String ip) {
         lock.lock();
@@ -177,7 +186,7 @@ public class AddressingTable {
     public Set<String> getVizinhos() {
         lock.lock();
         try {
-            return this.streamingTable.keySet();
+            return this.ips.keySet();
         } finally {
             lock.unlock();
         }
@@ -186,7 +195,7 @@ public class AddressingTable {
     public Set<String> getVizinhosClone() {
         lock.lock();
         try {
-            return this.streamingTable.keySet().stream().map(String::new).collect(Collectors.toSet());
+            return this.ips.keySet().stream().map(String::new).collect(Collectors.toSet());
         } finally {
             lock.unlock();
         }
@@ -320,6 +329,7 @@ public class AddressingTable {
         this.hops = new HashMap<>();
         this.latencies = new HashMap<>();
         this.floodTable = new HashMap<>();
+        this.ips = neighbours;
 
         this.toServer = null;
         this.provider = null;
