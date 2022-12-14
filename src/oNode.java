@@ -157,10 +157,18 @@ public class oNode {
         s.close();
 
         String dados = new String(rp.getDados(), StandardCharsets.UTF_8);
-        Set<String> vizinhos = new TreeSet<>(List.of(dados.split(";")));
+        String[] arrr = dados.split(";");
         Map<String, String> viz = new HashMap<>();
 
-        System.out.println("Vizinhos=" + vizinhos.toString());
+        // Iterate over the substrings and add them to the Map
+        for (String substring : arrr) {
+            // Split each substring using the "=" delimiter
+            String[] keyValue = substring.split("=");
+            // Add the key and value to the Map
+            viz.put(keyValue[0], keyValue[1]);
+        }
+
+        System.out.println("Vizinhos=" + viz.toString());
 
         return new AddressingTable(viz);
     }

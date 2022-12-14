@@ -49,7 +49,6 @@ public class Bootstrapper {
             // Split the input string using the "," delimiter
 
             String ip;
-            boolean flag = true;
             while (sc.hasNextLine()) {
 
                 arr = sc.nextLine().split(";");

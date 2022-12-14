@@ -34,8 +34,8 @@ public class Thread_Server_Reader implements Runnable {
                 switch (packet.getTipo()) {
                     // pedido Vizinhos
                     case 1:
-                        String adj = bootstrapper.getVizinhos(packet.getOrigem());
-                        Packet rp = new Packet(this.table.getIps().get(packet.getOrigem()), packet.getDest(), 2,
+                        String adj = bootstrapper.getVizinhos(this.table.getIps().get(packet.getOrigem()));
+                        Packet rp = new Packet(packet.getOrigem(), packet.getDest(), 2,
                                 adj.getBytes(StandardCharsets.UTF_8));
 
                         System.out.println(
