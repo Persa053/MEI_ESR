@@ -120,7 +120,7 @@ public class Thread_Node_Reader implements Runnable {
                             for (String vizinho : vizinhos) {
                                 Instant current_start = Instant.now();
                                 queue.add(new Packet(vizinho, table.getIp(vizinho), 5,
-                                        (p.getOrigem() + " "
+                                                (prev_sender + " "
                                                 + (hops + 1) + " "
                                                 + current_start.toString() + " "
                                                 + timeElapsed.toString() + " "
