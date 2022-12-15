@@ -95,12 +95,20 @@ public class Thread_Node_Reader implements Runnable {
                         // Map<String, Instant> floodTable2 = table.getFloodTable();
 
                         Set<String> alias = new TreeSet<>();
-                        for (int i = 6; i < array.length; i++)
+                        int i = 6;
+                        for (; i < array.length; i++)
                             alias.add(array[i]);
+
+                        Set<String> alias2 = new TreeSet<>();
+                        if (i < array.length) {
+                            for (; i < array.length; i++)
+                                alias2.add(array[i]);
+                        }
                         // System.out.println("-------->" + alias);
                         Map<String, Instant> floodTable = table.getFloodTable();
                         // Se não existir o server na tabela ou for uma nova wave reencaminha o pacote
-                        if (!floodTable.keySet().contains(server) || floodTable.get(server).isBefore(wave)) {
+                        if (!floodTable.keySet().contains(server) || floodTable.get(server).isBefore(wave)
+                                || floodTable.get(server).equals(wave)) {
                             floodTable.put(server, wave);
 
                             String best = table.getToServer();
@@ -115,6 +123,21 @@ public class Thread_Node_Reader implements Runnable {
                                 System.out.println("UPDATED");
                                 System.out.println("Old Best = " + best);
                                 System.out.println("New Best = " + table.getToServer());
+
+                                if (table.isStreaming()) {
+                                    Packet stream = new Packet(table.getToServer(), table.getIp(table.getToServer()), 3,
+                                            p.getDados());
+
+                                    Packet stopStream = new Packet(best,
+                                            table.getIp(best), 4,
+                                            p.getDados());
+
+                                    queue.add(stopStream);
+                                    System.out.println("Mandei pacote 4 para " + best);
+                                    queue.add(stream);
+                                    System.out.println("Mandei pacote 3 para " + table.getToServer());
+                                }
+
                             }
 
                             System.out
@@ -128,14 +151,26 @@ public class Thread_Node_Reader implements Runnable {
                             StringBuilder sb = new StringBuilder();
                             for (String ss : this.table.getIps().values())
                                 sb.append(" ").append(ss);
+
+                            StringBuilder sb2 = new StringBuilder();
+                            for (String ss : alias)
+                                sb2.append(" ").append(ss);
+
+                            System.out.println(sb.toString());
                             // reencaminha para todos menos o que lhe enviou
                             Set<String> vizinhos = table.getVizinhosClone();
                             vizinhos.remove(p.getOrigem());
                             for (String string : alias)
                                 vizinhos.remove(string);
 
+                            if (!alias2.isEmpty()) {
+                                for (String string : alias2)
+                                    vizinhos.remove(string);
+                            }
+
                             for (String vizinho : vizinhos) {
                                 Instant current_start = Instant.now();
+                                System.out.println("--------------->mandei o para:" + vizinho + "\n");
                                 queue.add(new Packet(vizinho, table.getIp(vizinho), 5,
                                         (prev_sender + " "
                                                 + (hops + 1) + " "
@@ -143,7 +178,8 @@ public class Thread_Node_Reader implements Runnable {
                                                 + timeElapsed.toString() + " "
                                                 + server + " "
                                                 + wave.toString()
-                                                + sb.toString())
+                                                + sb.toString()
+                                                + sb2.toString())
                                                 .getBytes(StandardCharsets.UTF_8)));
                                 // System.out.println("Enviado para " + vizinho);
                                 // System.out.println("------->" + ss.toString());
