@@ -32,7 +32,7 @@ public class ForwarderRTP implements Runnable {
                         int RTP_dest_port = 25000;
                         DatagramPacket senddp = new DatagramPacket(rcvdp.getData(), rcvdp.getData().length,
                                 InetAddress.getByName(ip), RTP_dest_port);
-                        System.out.println("Sent RTP packet");
+                        System.out.println("Sent RTP packet to" + ip);
                         RTPsocket.send(senddp);
                     }
 

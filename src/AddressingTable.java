@@ -72,7 +72,6 @@ public class AddressingTable {
         }
     }
 
-
     public Duration getLatency(String ip) {
         lock.lock();
         try {
@@ -284,18 +283,19 @@ public class AddressingTable {
         if (val_inferior > 0) {
             this.setToServer(sender);
             this.setProvider(server);
-            System.out.println("Route mais rápida encontrada");
+            // System.out.println("Route mais rápida encontrada");
         } else if (val_superior > 0 && best_route_hops > hops) {
-            System.out.println("prev_best_route = " + this.getToServer() + "   best_route_hops = " + best_route_hops
-                    + " sender hops = " + hops);
+            // System.out.println("prev_best_route = " + this.getToServer() + "
+            // best_route_hops = " + best_route_hops
+            // + " sender hops = " + hops);
             // 10.0.2.1 hops = 2 hops = 2
             this.setToServer(sender);
             this.setProvider(server);
             this.setHops(sender, hops);
             this.setLatency(sender, timeElapsed);
-            System.out.println("Diferença de tempo < 1 sec, mas menos hops");
+            // System.out.println("Diferença de tempo < 1 sec, mas menos hops");
         } else {
-            System.out.println("Não é mais rápida");
+            // System.out.println("Não é mais rápida");
         }
 
     }
@@ -320,6 +320,8 @@ public class AddressingTable {
                 UpdateRoute(ip, server, this.getHops(ip), this.getLatency(ip));
             }
         }
+
+        
     }
 
     public AddressingTable(Map<String, String> neighbours) {
@@ -337,7 +339,6 @@ public class AddressingTable {
         for (String s : neighbours.keySet()) {
             this.ips.put(neighbours.get(s), s);
         }
-
 
         for (String n : ips.keySet()) {
             this.streamingTable.put(n, false);
