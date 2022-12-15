@@ -29,10 +29,12 @@ public class ForwarderRTP implements Runnable {
                 Map<String, Boolean> ips = table.getStreamingTable();
                 for (String ip : ips.keySet()) {
                     if (ips.get(ip)) {
+                        RTPpacket rtp_packet = new RTPpacket(rcvdp.getData(), rcvdp.getLength());
+
                         int RTP_dest_port = 25000;
                         DatagramPacket senddp = new DatagramPacket(rcvdp.getData(), rcvdp.getData().length,
                                 InetAddress.getByName(ip), RTP_dest_port);
-                        System.out.println("Sent RTP packet to" + ip);
+                        System.out.println("Sent RTP packet to " + ip + " SeqNum " + rtp_packet.getsequencenumber());
                         RTPsocket.send(senddp);
                     }
 

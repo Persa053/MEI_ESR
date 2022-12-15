@@ -33,4 +33,13 @@ public class RTPpacketQueue {
             lock.unlock();
         }
     }
+
+    public void reset() throws InterruptedException {
+        lock.lock();
+        try {
+            this.queue = new LinkedList<>();
+        } finally {
+            lock.unlock();
+        }
+    }
 }

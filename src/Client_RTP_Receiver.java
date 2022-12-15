@@ -40,6 +40,9 @@ public class Client_RTP_Receiver implements Runnable {
                     }
                 }
 
+
+                
+                rtp_packet.printheader();
                 if (table.getisConsuming()) {
                     RTPqueue.add(rtp_packet);
                 }

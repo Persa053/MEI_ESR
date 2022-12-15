@@ -21,7 +21,7 @@ public class ServerMonitoring implements Runnable {
 
         while (true) {
             try {
-                Thread.sleep(7000);
+                Thread.sleep(5000);
 
                 Set<String> vizinhos = table.getVizinhos();
 

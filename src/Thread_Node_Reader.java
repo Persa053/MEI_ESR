@@ -40,7 +40,7 @@ public class Thread_Node_Reader implements Runnable {
                     case 3:
                         System.out.println("\n\n\n");
                         System.out.println("Node recebeu tipo 3 de " + p.getOrigem());
-                        if (!table.isStreaming()) {
+                        if (!table.isStreaming() && !p.getOrigem().equals(table.getToServer())) {
                             System.out.println("NODE MANDOU TIPO 3 PARA " + table.getToServer());
                             System.out.println("\n\n\n");
                             Packet rp = new Packet(table.getToServer(), table.getIp(table.getToServer()), 3,
@@ -104,11 +104,14 @@ public class Thread_Node_Reader implements Runnable {
                             for (; i < array.length; i++)
                                 alias2.add(array[i]);
                         }
+                        // FIM DO PARSE
+
                         // System.out.println("-------->" + alias);
                         Map<String, Instant> floodTable = table.getFloodTable();
                         // Se não existir o server na tabela ou for uma nova wave reencaminha o pacote
                         if (!floodTable.keySet().contains(server) || floodTable.get(server).isBefore(wave)
                                 || floodTable.get(server).equals(wave)) {
+
                             floodTable.put(server, wave);
 
                             String best = table.getToServer();
@@ -117,7 +120,7 @@ public class Thread_Node_Reader implements Runnable {
                             table.setLatency(sender, timeElapsed);
                             table.setHops(sender, hops);
 
-                            table.UpdateRoutingTable(sender, server, hops, timeElapsed);
+                            table.UpdateRoutingTable(sender, server, hops, timeElapsed, wave);
 
                             if (best != null && table.getToServer() != null && !best.equals(table.getToServer())) {
                                 System.out.println("UPDATED");
@@ -132,10 +135,13 @@ public class Thread_Node_Reader implements Runnable {
                                             table.getIp(best), 4,
                                             p.getDados());
 
-                                    queue.add(stopStream);
-                                    System.out.println("Mandei pacote 4 para " + best);
+                                    // table.turnOn(table.getToServer());
                                     queue.add(stream);
                                     System.out.println("Mandei pacote 3 para " + table.getToServer());
+
+                                    // table.turnOff(best);
+                                    queue.add(stopStream);
+                                    System.out.println("Mandei pacote 4 para " + best);
                                 }
 
                             }

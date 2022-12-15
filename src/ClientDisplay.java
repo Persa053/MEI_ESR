@@ -39,6 +39,8 @@ public class ClientDisplay implements Runnable {
   private PacketQueue TCPqueue;
   private String ip;
 
+  private int prevSeq;
+
   // --------------------------
   // Constructor
   // --------------------------
@@ -49,6 +51,7 @@ public class ClientDisplay implements Runnable {
     this.RTPqueue = RTPqueue;
     this.TCPqueue = TCPqueue;
     this.ip = ip;
+    this.prevSeq = -1;
   }
 
   // ------------------------------------
@@ -61,7 +64,7 @@ public class ClientDisplay implements Runnable {
     public void actionPerformed(ActionEvent e) {
 
       System.out.println("Play Button pressed !");
-      System.out.println("ToServer="+table.getToServer() + " ip = " + ip);
+      System.out.println("ToServer=" + table.getToServer() + " ip = " + ip);
       TCPqueue.add(new Packet(table.getToServer(), table.getIp(table.getToServer()), 3,
           "".getBytes(StandardCharsets.UTF_8)));
       table.setisConsuming(true);
@@ -84,7 +87,8 @@ public class ClientDisplay implements Runnable {
 
       table.setisConsuming(false);
       if (!table.isStreaming()) {
-        TCPqueue.add(new Packet(table.getToServer(), table.getIp(table.getToServer()), 4, "".getBytes(StandardCharsets.UTF_8)));
+        TCPqueue.add(
+            new Packet(table.getToServer(), table.getIp(table.getToServer()), 4, "".getBytes(StandardCharsets.UTF_8)));
       }
       // exit
       System.exit(0);
@@ -95,6 +99,9 @@ public class ClientDisplay implements Runnable {
   // ------------------------------------
 
   class clientTimerListener implements ActionListener {
+    private int prev_seq = -1;
+    private int current_seq = -1;
+
     public void actionPerformed(ActionEvent e) {
 
       // Construct a DatagramPacket to receive data from the UDP socket
@@ -103,11 +110,19 @@ public class ClientDisplay implements Runnable {
       try {
         // create an RTPpacket object from the DP
         RTPpacket rtp_packet = RTPqueue.remove();
+
+        if (this.prev_seq == -1) {
+          this.prev_seq = rtp_packet.getsequencenumber();
+        } else {
+          
+        }
+
         // RTPpacket rtp_packet = new RTPpacket(rcvdp.getData(), rcvdp.getLength());
 
         // print important header fields of the RTP packet received:
-        System.out.println("Got RTP packet with SeqNum # " + rtp_packet.getsequencenumber() + " TimeStamp "
-            + rtp_packet.gettimestamp() + " ms, of type " + rtp_packet.getpayloadtype());
+        // System.out.println("Got RTP packet with SeqNum # " +
+        // rtp_packet.getsequencenumber() + " TimeStamp "
+        // + rtp_packet.gettimestamp() + " ms, of type " + rtp_packet.getpayloadtype());
 
         // print header bitstream:
         rtp_packet.printheader();
